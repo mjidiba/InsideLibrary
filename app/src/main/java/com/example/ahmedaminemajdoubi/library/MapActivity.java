@@ -11,6 +11,9 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.PointF;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,6 +43,8 @@ import com.indooratlas.android.sdk.resources.IATask;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class MapActivity extends AppCompatActivity {
 
@@ -112,23 +117,27 @@ public class MapActivity extends AppCompatActivity {
         // prevent the screen going to sleep while app is on foreground
         findViewById(android.R.id.content).setKeepScreenOn(true);
 
-        mImageView = (BlueDotClass) findViewById(R.id.imageView);
+        if (!wifiAndLocation())
+            new SweetAlertDialog(this)
+                .setTitleText("Veuillez vérifier votre connexion Wi-fi et votre GPS")
+                .show();
+        else{
+            mImageView = (BlueDotClass) findViewById(R.id.imageView);
 
 
-        mDownloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-        mIALocationManager = IALocationManager.create(this);
-        mFloorPlanManager = IAResourceManager.create(this);
-
-
+            mDownloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+            mIALocationManager = IALocationManager.create(this);
+            mFloorPlanManager = IAResourceManager.create(this);
+            final String floorPlanId = getString(R.string.indooratlas_floor_plan_id);
+            if (!TextUtils.isEmpty(floorPlanId)) {
+                final IALocation location = IALocation.from(IARegion.floorPlan(floorPlanId));
+                mIALocationManager.setLocation(location);
+            }
+            readBookDestination();
+        }
         /* optional setup of floor plan id
            if setLocation is not called, then location manager tries to find
            location automatically */
-        final String floorPlanId = getString(R.string.indooratlas_floor_plan_id);
-        if (!TextUtils.isEmpty(floorPlanId)) {
-            final IALocation location = IALocation.from(IARegion.floorPlan(floorPlanId));
-            mIALocationManager.setLocation(location);
-        }
-        readBookDestination();
     }
 
     @Override
@@ -336,5 +345,15 @@ public class MapActivity extends AppCompatActivity {
 
         listz.add(destination1);
         listz.add(destination2);
+    }
+
+    public boolean wifiAndLocation() {
+        ConnectivityManager conMgr = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
+        final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+        if(netInfo == null || !netInfo.isConnected() || !netInfo.isAvailable() || !manager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            return false;
+        }
+        return true;
     }
 }
