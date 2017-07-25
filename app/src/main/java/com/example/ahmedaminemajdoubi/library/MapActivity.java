@@ -52,6 +52,12 @@ public class MapActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_WRITE_EXTERNAL_STORAGE = 1;
     private static final int REQUEST_CODE_ACCESS_COARSE_LOCATION = 2;
+    public static final float Y1=40.67f ,X1 =49f;
+    public static final float Y2= 26.4f,X2 = 33f;
+    public static final float Y3= 10,X3 = 0;
+    public static final float Y4= 10,X4 = 0;
+    public static final float []  P1={29.6f,21.35f};
+    public static final float []  P2={21.35f,21.35f};
 
     // blue dot radius in meters
     private static final float dotRadius = 1.0f;
@@ -63,29 +69,20 @@ public class MapActivity extends AppCompatActivity {
     private long mDownloadId;
     private DownloadManager mDownloadManager;
     private List<Destination> listz = new ArrayList<Destination>();
+    private float [] X= {0f,0f};
+    private float [] Y= {0f,0f};
 
     private IALocationListener mLocationListener = new IALocationListenerSupport() {
         @Override
         public void onLocationChanged(IALocation location) {
             Log.d(TAG, "location is: " + location.getLatitude() + "," + location.getLongitude());
             if (mImageView != null && mImageView.isReady()) {
-                IALatLng latLng = new IALatLng(location.getLatitude(), location.getLongitude());
-                IALatLng DestLatLng1 = new IALatLng(listz.get(0).getLongitude(),listz.get(0).getLatitude());
-                IALatLng DestLatLng2 = new IALatLng(listz.get(1).getLongitude(),listz.get(1).getLatitude());
-                Log.e("Lat", String.valueOf(listz.get(0).getLongitude()));
-                Log.e("Long", String.valueOf(listz.get(0).getLatitude()));
-
+                final IALatLng latLng = new IALatLng(location.getLatitude(), location.getLongitude());
 
                 PointF point = mFloorPlan.coordinateToPoint(latLng);
-                PointF destPoint1 = mFloorPlan.coordinateToPoint(DestLatLng1);
-                PointF destPoint2 = mFloorPlan.coordinateToPoint(DestLatLng2);
-                destPoint1 = new PointF (500,600);
-                destPoint2 = new PointF (700,600);
-
-
-
+                setPos(point);
                 mImageView.setDotCenter(point);
-                mImageView.setDestCenter(destPoint1,destPoint2);
+                setDest();
                 mImageView.postInvalidate();
             }
         }
@@ -200,7 +197,11 @@ public class MapActivity extends AppCompatActivity {
     private void showFloorPlanImage(String filePath) {
         Log.w(TAG, "showFloorPlanImage: " + filePath);
         mImageView.setRadius(mFloorPlan.getMetersToPixels() * dotRadius);
-        mImageView.setImage(ImageSource.uri(filePath));
+        if (mFloorPlan.getFloorLevel()==1)
+            mImageView.setImage(ImageSource.resource(R.drawable.floor1).tilingDisabled());
+        else if(mFloorPlan.getFloorLevel()==2)
+            mImageView.setImage(ImageSource.resource(R.drawable.floor2).tilingDisabled());
+        //mImageView.setImage(ImageSource.uri(filePath));
     }
 
     /**
@@ -355,5 +356,91 @@ public class MapActivity extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+
+    private void setDest(){
+                    for (int i = 0; i < 2; i++) {
+                if (listz.get(0).getId() <= 6) {
+
+                    Y[i] = Y1;
+                    X[i] = X1 - 2.23f * (listz.get(i).getId() - 1);
+                    if (listz.get(i).getId() > 3) X[i] -= 3.6;
+                }
+                if (listz.get(i).getId() <= 15 && listz.get(i).getId() >= 7) {
+                    Y[i] = Y2;
+                    X[i] = X2 + 2f * (listz.get(i).getId() - 7);
+                }
+                if (listz.get(i).getId() <= 24 && listz.get(i).getId() >= 15) {
+                    Y[i] = Y3;
+                    X[i] = X3 - 2.23f * (listz.get(i).getId() - 15);
+                }
+                if (listz.get(i).getId() >= 25) {
+                    Y[i] = Y4;
+                    X[i] = X4 + 2.23f * (listz.get(i).getId() - 25);
+                    if (listz.get(i).getId() > 27) X[i] += 10;
+                }
+            }
+
+            PointF destPoint1 = new PointF((X[0]-P1[0])*mFloorPlan.getMetersToPixels(),(Y[0]-P2[0])*mFloorPlan.getMetersToPixels());
+            PointF destPoint2 = new PointF((X[1]-P1[0])*mFloorPlan.getMetersToPixels(),(Y[1]-P2[0])*mFloorPlan.getMetersToPixels());
+
+            if((listz.get(0).getId()<=15 && mFloorPlan.getFloorLevel()==1) || (listz.get(0).getId()>=16 && mFloorPlan.getFloorLevel()==2))
+            {
+
+
+                String toast = new String("Le livre se trouve dans l");
+                if (listz.get(0).getShelfs().length > 1)
+                {
+                    toast += "es étagères: " + listz.get(0).getShelfs()[0];
+                    for (int i = 1; i < listz.get(0).getShelfs().length; i++) {
+                        toast += ", " + listz.get(0).getShelfs()[i];
+                    }
+                    toast+=" au point rouge";
+                }
+                if (listz.get(0).getShelfs().length == 1)
+                {toast += "'étagère: " + listz.get(0).getShelfs()[0];
+                    toast+=" au point rouge";}
+
+                else
+                {toast = "Livre non Trouvé.";}
+                if(listz.get(0).getId()!=listz.get(1).getId())
+                {   mImageView.setDestCenter(destPoint2,destPoint1);
+                    toast+=" ou bien dans l";
+                    if (listz.get(1).getShelfs().length > 1)
+                    {
+                        toast += "es étagères: " + listz.get(1).getShelfs()[0];
+                        for (int i = 1; i < listz.get(1).getShelfs().length; i++) {
+                            toast += ", " + listz.get(1).getShelfs()[i];
+                        }
+                    }
+                    if (listz.get(0).getShelfs().length == 1)
+                        toast += "'étagère: " + listz.get(1).getShelfs()[0];
+                    toast+=" au point noir.";
+                    Log.e("id0", String.valueOf(listz.get(0).getId()));
+                    Log.e("id1", String.valueOf(listz.get(1).getId()));
+                }
+                else    mImageView.setDestCenter(destPoint1,destPoint2);
+
+
+                Toast.makeText(getApplicationContext(), toast, Toast.LENGTH_LONG).show();
+
+            }
+
+            else
+            {
+                if(mFloorPlan.getFloorLevel()==1)
+                    Toast.makeText(getApplicationContext(), "Le Livre se trouve à la Mezzanine", Toast.LENGTH_LONG).show();
+                if(mFloorPlan.getFloorLevel()==2)
+                    Toast.makeText(getApplicationContext(), "Le Livre se trouve à la Salle de Lecture", Toast.LENGTH_LONG).show();
+            }
+    }
+
+    private PointF setPos(PointF p){
+
+        p.x-=P1[mFloorPlan.getFloorLevel()-1]*mFloorPlan.getMetersToPixels();
+        p.y-=P2[mFloorPlan.getFloorLevel()-1]*mFloorPlan.getMetersToPixels();
+
+        return p;
+
     }
 }
