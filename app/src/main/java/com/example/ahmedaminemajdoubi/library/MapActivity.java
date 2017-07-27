@@ -19,6 +19,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Looper;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -59,7 +61,6 @@ public class MapActivity extends AppCompatActivity {
     public static final float []  P1={29.6f,21.35f};
     public static final float []  P2={21.35f,21.35f};
 
-    // blue dot radius in meters
     private static final float dotRadius = 1.0f;
     private IALocationManager mIALocationManager;
     private IAResourceManager mFloorPlanManager;
@@ -71,6 +72,8 @@ public class MapActivity extends AppCompatActivity {
     private List<Destination> listz = new ArrayList<Destination>();
     private float [] X= {0f,0f};
     private float [] Y= {0f,0f};
+    private CoordinatorLayout coordinatorLayout;
+
 
     private IALocationListener mLocationListener = new IALocationListenerSupport() {
         @Override
@@ -82,7 +85,6 @@ public class MapActivity extends AppCompatActivity {
                 PointF point = mFloorPlan.coordinateToPoint(latLng);
                 setPos(point);
                 mImageView.setDotCenter(point);
-                setDest();
                 mImageView.postInvalidate();
             }
         }
@@ -132,9 +134,12 @@ public class MapActivity extends AppCompatActivity {
             }
             readBookDestination();
         }
-        /* optional setup of floor plan id
-           if setLocation is not called, then location manager tries to find
-           location automatically */
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id
+                .map_layout);
+        Snackbar snackbar = Snackbar
+                .make(coordinatorLayout, "Veuillez Entrer à la Bibliothèque", Snackbar.LENGTH_INDEFINITE);
+
+        snackbar.show();
     }
 
     @Override
@@ -201,6 +206,11 @@ public class MapActivity extends AppCompatActivity {
             mImageView.setImage(ImageSource.resource(R.drawable.floor1).tilingDisabled());
         else if(mFloorPlan.getFloorLevel()==2)
             mImageView.setImage(ImageSource.resource(R.drawable.floor2).tilingDisabled());
+        else {Snackbar snackbar = Snackbar
+                    .make(coordinatorLayout, "Veuillez Entrer à la Bibliothèque", Snackbar.LENGTH_INDEFINITE);
+
+        snackbar.show();}
+        setDest();
         //mImageView.setImage(ImageSource.uri(filePath));
     }
 
@@ -422,16 +432,23 @@ public class MapActivity extends AppCompatActivity {
                 else    mImageView.setDestCenter(destPoint1,destPoint2);
 
 
-                Toast.makeText(getApplicationContext(), toast, Toast.LENGTH_LONG).show();
+                Snackbar snackbar = Snackbar
+                        .make(coordinatorLayout, toast, Snackbar.LENGTH_INDEFINITE);
+
+                snackbar.show();
 
             }
 
             else
             {
                 if(mFloorPlan.getFloorLevel()==1)
-                    Toast.makeText(getApplicationContext(), "Le Livre se trouve à la Mezzanine", Toast.LENGTH_LONG).show();
+                {   Snackbar snackbar = Snackbar
+                            .make(coordinatorLayout, "Le Livre se trouve à la Mezzanine", Snackbar.LENGTH_INDEFINITE);
+                    snackbar.show();}
                 if(mFloorPlan.getFloorLevel()==2)
-                    Toast.makeText(getApplicationContext(), "Le Livre se trouve à la Salle de Lecture", Toast.LENGTH_LONG).show();
+                {   Snackbar snackbar = Snackbar
+                            .make(coordinatorLayout, "Le Livre se trouve à la Salle de Lecture", Snackbar.LENGTH_INDEFINITE);
+                    snackbar.show();}
             }
     }
 

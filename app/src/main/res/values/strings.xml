@@ -7,4 +7,19 @@
     <string name="button_play">Search</string>
     <string name="location_permission_request_title">Permission required</string>
     <string name="location_permission_request_rationale">Access to coarse location is required for faster first fix.</string>
+
+    <string name="title_activity_welcome">Home Screen</string>
+    <string name="next">SUIVANT</string>
+    <string name="skip">PASSER</string>
+    <string name="start">ÇA MARCHE</string>
+
+    <string name="slide_1_title">Chercher Un Ouvrage</string>
+    <string name="slide_1_desc">Par Titre ou Par Auteur</string>
+
+    <string name="slide_2_title">Description de l\'Ouvrage</string>
+    <string name="slide_2_desc">Couvertures, Résumés, etc.</string>
+
+    <string name="slide_3_title">Position Précise de l\'Ouvrage</string>
+    <string name="slide_3_desc">Vous localise et vous donne l\'étagère de l\'ouvrage</string>
+
 </resources>

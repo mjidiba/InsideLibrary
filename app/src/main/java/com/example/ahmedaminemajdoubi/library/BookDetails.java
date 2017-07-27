@@ -152,7 +152,6 @@ public class BookDetails extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onBackPressed(){
-        Log.e("a","a");
         this.finish();
     }
 }
