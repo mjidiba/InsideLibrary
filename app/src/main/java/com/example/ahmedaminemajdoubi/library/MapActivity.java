@@ -26,6 +26,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
@@ -73,7 +74,7 @@ public class MapActivity extends AppCompatActivity {
     private float [] X= {0f,0f};
     private float [] Y= {0f,0f};
     private CoordinatorLayout coordinatorLayout;
-
+    private TextView bookText;
 
     private IALocationListener mLocationListener = new IALocationListenerSupport() {
         @Override
@@ -136,10 +137,8 @@ public class MapActivity extends AppCompatActivity {
         }
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id
                 .map_layout);
-        Snackbar snackbar = Snackbar
-                .make(coordinatorLayout, "Veuillez Entrer à la Bibliothèque", Snackbar.LENGTH_INDEFINITE);
-
-        snackbar.show();
+        bookText = (TextView) findViewById(R.id.textView);
+        bookText.setText(getIntent().getStringExtra("book"));
     }
 
     @Override
@@ -353,7 +352,6 @@ public class MapActivity extends AppCompatActivity {
         if(length>1){
             destination2 = (Destination) getIntent().getParcelableExtra("Destination2");
         }
-
         listz.add(destination1);
         listz.add(destination2);
     }

@@ -1,6 +1,7 @@
 package com.example.ahmedaminemajdoubi.library;
 
 import android.content.Context;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import com.squareup.picasso.Picasso;
 import java.io.IOException;
 import android.content.Intent;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -55,10 +57,19 @@ public class BookDetails extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
 
          if(v == buttonDestination){
-             try {
-                 setDestination();
-             } catch (IOException e) {
-                 e.printStackTrace();
+             if (!wifiAndLocation())
+             {
+                 new SweetAlertDialog(this)
+                         .setTitleText("Activez votre Wifi et GPS")
+                         .show();
+             }
+             else {
+                 try {
+                     setDestination();
+                 }
+                 catch (IOException e) {
+                     e.printStackTrace();
+                 }
              }
          }
     }
@@ -131,6 +142,15 @@ public class BookDetails extends AppCompatActivity implements View.OnClickListen
         Bundle Bundle2 = new Bundle();
         Bundle2.putInt("length", length);
         intent.putExtras(Bundle2);
+        String bookString = new String();
+        bookString = myBook.getTitle()+" - "+ myBook.getAdditionalTitle() + "\n";
+        if (myBook.getAuthors().length != 0) {
+            bookString += myBook.getAuthors()[0];
+        }
+        for (int i = 1; i < myBook.getAuthors().length; i++) {
+            bookString += ", " + myBook.getAuthors()[i];
+        }
+        intent.putExtra("book",bookString);
         startActivity(intent);
     }
 
@@ -153,5 +173,15 @@ public class BookDetails extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onBackPressed(){
         this.finish();
+    }
+
+    public boolean wifiAndLocation() {
+        ConnectivityManager conMgr = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
+        final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+        if(netInfo == null || !netInfo.isConnected() || !netInfo.isAvailable() || !manager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            return false;
+        }
+        return true;
     }
 }

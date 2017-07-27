@@ -68,7 +68,7 @@ public class SearchBooks extends AppCompatActivity implements View.OnClickListen
             if (!isOnline())
             {
                 new SweetAlertDialog(this)
-                        .setTitleText("Veuillez vérifier votre connexion Wi-fi")
+                        .setTitleText("Vérifiez votre connexion Wi-fi")
                         .show();
             }
             else {
@@ -127,13 +127,21 @@ public class SearchBooks extends AppCompatActivity implements View.OnClickListen
             recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
                 @Override
                 public void onClick(View view, int position) {
-                    Book myBook = bookList.get(position);
-                    Intent intent = new Intent(getApplicationContext(), BookDetails.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable("book", myBook);
-                    intent.putExtras(bundle);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
+                    if (!isOnline())
+                    {
+                        new SweetAlertDialog(getApplicationContext())
+                                .setTitleText("Vérifiez votre connexion Wi-fi")
+                                .show();
+                    }
+                    else {
+                        Book myBook = bookList.get(position);
+                        Intent intent = new Intent(getApplicationContext(), BookDetails.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("book", myBook);
+                        intent.putExtras(bundle);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    }
                 }
 
                 @Override
