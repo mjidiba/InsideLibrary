@@ -154,7 +154,7 @@ public class BookDetails extends AppCompatActivity implements View.OnClickListen
         startActivity(intent);
     }
 
-    public String bookCoverLink(String isbn13){
+    public static String bookCoverLink(String isbn13){
         isbn13 = isbn13.replaceAll("-","");
         isbn13 = isbn13.substring(3);
         isbn13 = isbn13.substring(0, isbn13.length() - 1);

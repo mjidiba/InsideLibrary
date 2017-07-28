@@ -54,7 +54,7 @@ public class SearchBooks extends AppCompatActivity implements View.OnClickListen
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(this);
         recyclerView = (RecyclerView) findViewById(R.id.books_recycler_view);
-        bookAdapter = new BookAdapter(bookList);
+        bookAdapter = new BookAdapter(getApplicationContext(), bookList);
         RecyclerView.LayoutManager myLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(myLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());

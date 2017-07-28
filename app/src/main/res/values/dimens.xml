@@ -10,5 +10,20 @@
     <dimen name="slide_title">30dp</dimen>
     <dimen name="slide_desc">16dp</dimen>
     <dimen name="desc_padding">40dp</dimen>
+    <dimen name="search_field_left_margin">4dp</dimen>
+    <dimen name="search_field_right_margin">4dp</dimen>
+    <!--Book List-->
+    <dimen name="book_list_left_margin">16dp</dimen>
+    <dimen name="book_list_right_margin">16dp</dimen>
+    <dimen name="book_list_top_margin">16dp</dimen>
+    <dimen name="book_list_bottom_margin">16dp</dimen>
+    <dimen name="book_list_title_text">18sp</dimen>
+    <dimen name="book_content_left_margin">8dp</dimen>
+    <dimen name="book_content_right_margin">8dp</dimen>
+    <dimen name="book_content_bottom_margin">16dp</dimen>
+    <dimen name="book_content_top_margin">16dp</dimen>
+    <!--Max Results Spinner-->
+    <dimen name="spinner_top_margin">4dp</dimen>
+    <dimen name="spinner_text">12sp</dimen>
 
 </resources>
