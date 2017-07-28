@@ -5,6 +5,7 @@
     <string name="string_choose_password">Password</string>
     <string name="string_enter_email">Mobile Number</string>
     <string name="button_play">Search</string>
+    <string name="search_hint">Entrez le nom du livre ou l\'auteur</string>
     <string name="location_permission_request_title">Permission required</string>
     <string name="location_permission_request_rationale">Access to coarse location is required for faster first fix.</string>
 
