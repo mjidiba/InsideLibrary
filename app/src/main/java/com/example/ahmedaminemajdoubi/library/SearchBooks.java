@@ -5,13 +5,11 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.support.v7.widget.SearchView;
-import android.widget.Button;
 import android.widget.EditText;
 import com.google.gson.Gson;
 
@@ -24,7 +22,6 @@ import java.util.List;
 
 import java.io.IOException;
 import android.content.Intent;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
