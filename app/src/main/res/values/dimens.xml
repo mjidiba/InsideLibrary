@@ -18,10 +18,10 @@
     <dimen name="book_list_top_margin">16dp</dimen>
     <dimen name="book_list_bottom_margin">16dp</dimen>
     <dimen name="book_list_title_text">18sp</dimen>
-    <dimen name="book_content_left_margin">8dp</dimen>
-    <dimen name="book_content_right_margin">8dp</dimen>
-    <dimen name="book_content_bottom_margin">16dp</dimen>
-    <dimen name="book_content_top_margin">16dp</dimen>
+    <dimen name="book_content_left_margin">5dp</dimen>
+    <dimen name="book_content_right_margin">5dp</dimen>
+    <dimen name="book_content_bottom_margin">10dp</dimen>
+    <dimen name="book_content_top_margin">10dp</dimen>
     <!--Max Results Spinner-->
     <dimen name="spinner_top_margin">4dp</dimen>
     <dimen name="spinner_text">12sp</dimen>
