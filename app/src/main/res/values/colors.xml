@@ -3,7 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="authors">#999999</color>
+    <color name="authors">#e1dcdc</color>
     <color name="title">#222222</color>
     <color name="ia_blue">#ff00a5f5</color>
     <color name="dest_circle">#ffff0000</color>
@@ -34,7 +34,7 @@
 
     <!-- dots active colors -->
     <color name="dot_light_screen1">#6666ff</color>
-    <color name="dot_light_screen2">#8cf9eb</color>
+    <color name="dot_light_screen2">#0da0da</color>
     <color name="dot_light_screen3">#93c6fd</color>
     <color name="dot_light_screen4">#e4b5fc</color>
 

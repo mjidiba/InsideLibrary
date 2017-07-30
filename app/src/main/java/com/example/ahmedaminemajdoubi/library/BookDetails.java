@@ -106,7 +106,7 @@ public class BookDetails extends AppCompatActivity implements View.OnClickListen
     private void displayBook() {
         String coverImageUri = bookCoverLink(myBook.getIsbn());
         Context context = this;
-        Picasso.with(context).load(coverImageUri).resize(0, 700).into(bookCover);
+        Picasso.with(context).load(coverImageUri).resize(0, 1400).into(bookCover);
         String fullTitle = myBook.getTitle();
         if (!TextUtils.isEmpty(myBook.getAdditionalTitle()))
             fullTitle += " - " + myBook.getAdditionalTitle();
@@ -167,7 +167,7 @@ public class BookDetails extends AppCompatActivity implements View.OnClickListen
             lastDigit += i * digits[10-i];
         lastDigit = 11 - (lastDigit%11);
         String isbn10 = isbn13 + String.valueOf(lastDigit);
-        return "https://images-na.ssl-images-amazon.com/images/P/"+isbn10+".01._SCRM";//SCLZZZZZZZ.jpg";
+        return "https://images-na.ssl-images-amazon.com/images/P/"+isbn10+".01.L.jpg";//SCLZZZZZZZ.jpg";
     }
 
     @Override
