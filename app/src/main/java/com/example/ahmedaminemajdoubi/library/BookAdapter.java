@@ -65,7 +65,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.MyViewHolder>{
             allAuthors += ", "+ myBook.getAuthors()[i];
         }
         holder.authors.setText(allAuthors);
-        String coverImageUri = BookDetails.bookCoverLink(myBook.getIsbn());
+        String coverImageUri = BookDetails.bookCoverLink(myBook.getIsbn(), false);
         Picasso.with(context).load(coverImageUri).resize(96, 0).into(holder.cover);
     }
 

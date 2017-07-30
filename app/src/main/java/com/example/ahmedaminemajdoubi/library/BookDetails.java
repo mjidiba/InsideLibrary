@@ -6,8 +6,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
+import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -25,12 +26,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class BookDetails extends AppCompatActivity implements View.OnClickListener {
+public class BookDetails extends AppCompatActivity{
 
     private static final String REGISTER_URL = "http://10.1.32.94:8888/Library/findBooklocation.php";
     private Button buttonDestination;
-    private ImageView bookCover;
-    private TextView bookTitle, bookAuthor, bookEditor, bookSection, bookCote, bookIsbn, bookSummary;
+    private ImageView bookCover, bigImage;
+    private CardView summaryCardView;
+    private TextView bookTitle, bookAuthor, bookTitle2, bookAuthor2, bookEditor, bookSection, bookCote, bookIsbn, bookSummary;
     Book myBook;
 
     @Override
@@ -38,41 +40,51 @@ public class BookDetails extends AppCompatActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_details);
         bookCover = (ImageView) findViewById(R.id.bookCover);
+        bigImage = (ImageView) findViewById(R.id.bookCoverLarge);
         bookTitle = (TextView) findViewById(R.id.bookTitle);
         bookAuthor = (TextView) findViewById(R.id.bookAuthor);
+        bookTitle2 = (TextView) findViewById(R.id.bookTitle2);
+        bookAuthor2 = (TextView) findViewById(R.id.bookAuthor2);
         bookEditor = (TextView) findViewById(R.id.bookEditor);
         bookSection = (TextView) findViewById(R.id.bookSection);
         bookCote = (TextView) findViewById(R.id.bookCote);
         bookIsbn = (TextView) findViewById(R.id.bookIsbn);
         bookSummary = (TextView) findViewById(R.id.bookSummary);
         buttonDestination = (Button) findViewById(R.id.buttonDestination);
-        buttonDestination.setOnClickListener(this);
+        summaryCardView = (CardView) findViewById(R.id.SummaryCardView);
 
         myBook = getIntent().getParcelableExtra("book");
         displayBook();
 
     }
 
-    @Override
-    public void onClick(View v) {
+    public void zoomImage(View view){
+        ImageView image = (ImageView) view;
+        if(image.getId() == R.id.bookCover){
+            String bigCoverImageUri = bookCoverLink(myBook.getIsbn(),true);
+            Picasso.with(this).load(bigCoverImageUri).into(bigImage);
+            bigImage.setVisibility(View.VISIBLE);
+        }
+        else
+            bigImage.setVisibility(View.INVISIBLE);
+    }
 
-         if(v == buttonDestination){
-             if (!wifiAndLocation())
-             {
-                 new SweetAlertDialog(this)
-                         .setTitleText("Activez votre Wifi et GPS")
-                         .show();
+     public void findBook(View view){
+         if (!wifiAndLocation())
+         {
+             new SweetAlertDialog(this)
+                     .setTitleText("Activez votre Wifi et GPS")
+                     .show();
+         }
+         else {
+             try {
+                 setDestination();
              }
-             else {
-                 try {
-                     setDestination();
-                 }
-                 catch (IOException e) {
-                     e.printStackTrace();
-                 }
+             catch (IOException e) {
+                 e.printStackTrace();
              }
          }
-    }
+     }
 
     private void setDestination() throws IOException {
         String cote = myBook.getCote();
@@ -104,17 +116,22 @@ public class BookDetails extends AppCompatActivity implements View.OnClickListen
     }
 
     private void displayBook() {
-        String coverImageUri = bookCoverLink(myBook.getIsbn());
+        String coverImageUri = bookCoverLink(myBook.getIsbn(),false);
         Context context = this;
-        Picasso.with(context).load(coverImageUri).resize(0, 1400).into(bookCover);
+        Picasso.with(context).load(coverImageUri).resize(0, 130).into(bookCover);
         String fullTitle = myBook.getTitle();
         if (!TextUtils.isEmpty(myBook.getAdditionalTitle()))
             fullTitle += " - " + myBook.getAdditionalTitle();
-        bookTitle.setText("Titre : " + fullTitle);
-        bookEditor.setText("Editeur : " + myBook.getEditor());
-        bookSection.setText("Section : " + myBook.getSection());
-        bookCote.setText("Cote : " + myBook.getCote());
-        bookSummary.setText("Resume : \n" + myBook.getSummary());
+        bookTitle.setText(fullTitle);
+        bookTitle2.setText("Titre : " + fullTitle);
+        bookEditor.setText("Editeur : "+ myBook.getEditor());
+        bookSection.setText("Section : "+ myBook.getSection());
+        bookCote.setText("Cote : "+ myBook.getCote());
+        if(myBook.getSummary().isEmpty())
+            summaryCardView.setVisibility(View.INVISIBLE);
+        else
+            summaryCardView.setVisibility(View.VISIBLE);
+        bookSummary.setText("Resume : " + myBook.getSummary());
         bookCote.setText("Cote : " + myBook.getCote());
         bookIsbn.setText("ISBN : " + myBook.getIsbn());
         String allAuthors = new String();
@@ -124,7 +141,9 @@ public class BookDetails extends AppCompatActivity implements View.OnClickListen
         for (int i = 1; i < myBook.getAuthors().length; i++) {
             allAuthors += ", " + myBook.getAuthors()[i];
         }
-        bookAuthor.setText("Auteurs : " + allAuthors);
+        bookAuthor.setText(allAuthors);
+        bookAuthor2.setText("Auteurs : " + allAuthors);
+
     }
 
     private void findBook(Destination[] destinations){
@@ -154,7 +173,7 @@ public class BookDetails extends AppCompatActivity implements View.OnClickListen
         startActivity(intent);
     }
 
-    public static String bookCoverLink(String isbn13){
+    public static String bookCoverLink(String isbn13, boolean length){
         isbn13 = isbn13.replaceAll("-","");
         isbn13 = isbn13.substring(3);
         isbn13 = isbn13.substring(0, isbn13.length() - 1);
@@ -167,7 +186,11 @@ public class BookDetails extends AppCompatActivity implements View.OnClickListen
             lastDigit += i * digits[10-i];
         lastDigit = 11 - (lastDigit%11);
         String isbn10 = isbn13 + String.valueOf(lastDigit);
-        return "https://images-na.ssl-images-amazon.com/images/P/"+isbn10+".01.L.jpg";//SCLZZZZZZZ.jpg";
+        String l = new String();
+        if(length) l = "L";
+        else l ="T";
+
+        return "https://images-na.ssl-images-amazon.com/images/P/"+isbn10+".01."+l+".jpg";//SCLZZZZZZZ.jpg";
     }
 
     @Override

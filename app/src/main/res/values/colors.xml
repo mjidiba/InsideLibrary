@@ -9,11 +9,11 @@
     <color name="dest_circle">#ffff0000</color>
     <color name="book_list_authors">#616161</color>
 
-    <color name="white">#FFFFFF</color>
+    <color name="white">#ffffff</color>
     <color name="grey">#7A7A7A</color>
-    <color name="background">#0044AA</color>
-    <color name="bluelight">#449DEF</color>
-    <color name="bluedark">#2F6699</color>
+    <color name="background">#2866c4</color>
+    <color name="bluelight">#9fcdf8</color>
+    <color name="bluedark">#245a8b</color>
     <color name="greenlight">#70C656</color>
     <color name="greendark">#53933F</color>
     <color name="orangelight">#F3AE1B</color>
@@ -23,7 +23,7 @@
     <!-- Screens background color-->
     <color name="bg_screen1">#3F51B5</color>
     <color name="bg_screen2">#20d2bb</color>
-    <color name="bg_screen3">#3395ff</color>
+    <color name="bg_screen3">#7fb6f2</color>
     <color name="bg_screen4">#c873f4</color>
 
     <!-- dots inactive colors -->
