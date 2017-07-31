@@ -8,13 +8,6 @@
     android:id="@+id/map_layout"
     tools:context=".MapActivity">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:gravity="center"/>
-
     <com.example.ahmedaminemajdoubi.library.BlueDotClass
         android:id="@+id/imageView"
         android:layout_width="match_parent"

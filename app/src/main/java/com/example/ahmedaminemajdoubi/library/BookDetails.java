@@ -118,7 +118,7 @@ public class BookDetails extends AppCompatActivity{
     private void displayBook() {
         String coverImageUri = bookCoverLink(myBook.getIsbn(),false);
         Context context = this;
-        Picasso.with(context).load(coverImageUri).resize(0, 130).into(bookCover);
+        Picasso.with(context).load(coverImageUri).into(bookCover);
         String fullTitle = myBook.getTitle();
         if (!TextUtils.isEmpty(myBook.getAdditionalTitle()))
             fullTitle += " - " + myBook.getAdditionalTitle();
@@ -170,6 +170,7 @@ public class BookDetails extends AppCompatActivity{
             bookString += ", " + myBook.getAuthors()[i];
         }
         intent.putExtra("book",bookString);
+        intent.putExtra("isbn",myBook.getIsbn().toString());
         startActivity(intent);
     }
 

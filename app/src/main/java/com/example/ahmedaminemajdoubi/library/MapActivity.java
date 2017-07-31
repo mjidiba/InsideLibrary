@@ -30,6 +30,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +47,7 @@ import com.indooratlas.android.sdk.resources.IAResourceManager;
 import com.indooratlas.android.sdk.resources.IAResult;
 import com.indooratlas.android.sdk.resources.IAResultCallback;
 import com.indooratlas.android.sdk.resources.IATask;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -75,6 +77,8 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
     private IATask<IAFloorPlan> mPendingAsyncResult;
     public static IAFloorPlan mFloorPlan;
     private BlueDotClass mImageView;
+    private ShelfClass sImageView1;
+    private ShelfClass sImageView2;
     private long mDownloadId;
     private DownloadManager mDownloadManager;
     private List<Destination> listz = new ArrayList<Destination>();
@@ -84,6 +88,10 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
     private TextView bookText;
     private float currentDegree = 0f;
     private SensorManager mSensorManager;
+    private ImageView bigImage;
+    private int [] rayon1={0,0,0,0,0,0};
+    private int [] rayon2={0,0,0,0,0,0};
+
 
     private IALocationListener mLocationListener = new IALocationListenerSupport() {
         @Override
@@ -123,7 +131,7 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map);
+        setContentView(R.layout.activity_map2);
         // prevent the screen going to sleep while app is on foreground
         findViewById(android.R.id.content).setKeepScreenOn(true);
 
@@ -139,11 +147,22 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
             mFloorPlanManager = IAResourceManager.create(this);
             readBookDestination();
             mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+            sImageView1 = (ShelfClass) findViewById(R.id.rayon1);
+            sImageView2 = (ShelfClass) findViewById(R.id.rayon2);
+            sImageView2.setShelves(rayon1);
+            sImageView1.setImage(ImageSource.resource(R.drawable.shelves));
+            if(!listz.get(0).equals(listz.get(1)))
+            {
+                sImageView2.setImage(ImageSource.resource(R.drawable.shelves));
+                sImageView2.setShelves(rayon2);
+            }
+
         }
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id
-                .map_layout);
-        bookText = (TextView) findViewById(R.id.textView);
-        bookText.setText(getIntent().getStringExtra("book"));
+        //coordinatorLayout = (CoordinatorLayout) findViewById(R.id.map_layout);
+        //bookText = (TextView) findViewById(R.id.textView);
+        //bookText.setText(getIntent().getStringExtra("book"));
+        bigImage = (ImageView) findViewById(R.id.book_cover);
+        //Picasso.with(this).load(BookDetails.bookCoverLink(getIntent().getStringExtra("isbn"),true)).into(bigImage);
     }
 
     @Override
@@ -175,7 +194,7 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
 
         // get the angle around the z-axis rotated
         currentDegree = Math.round(event.values[0]);
-        Log.e("compass", String.valueOf(currentDegree));
+        //Log.e("compass", String.valueOf(currentDegree));
         if(mImageView!=null && mFloorPlan!=null)
             mImageView.setBearing(currentDegree-mFloorPlan.getBearing());
     }
@@ -430,14 +449,19 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
                 if (listz.get(0).getShelfs().length > 1)
                 {
                     toast += "es étagères: " + listz.get(0).getShelfs()[0];
-                    for (int i = 1; i < listz.get(0).getShelfs().length; i++) {
+                    for (int i = 1; i < listz.get(0).getShelfs().length; i++)
+                    {
+                        rayon1 [listz.get(0).getShelfs()[i]-1]=1;
                         toast += ", " + listz.get(0).getShelfs()[i];
                     }
                     toast+=" au point rouge";
                 }
                 if (listz.get(0).getShelfs().length == 1)
-                {toast += "'étagère: " + listz.get(0).getShelfs()[0];
-                    toast+=" au point rouge";}
+                {
+                    toast += "'étagère: " + listz.get(0).getShelfs()[0];
+                    rayon1[listz.get(0).getShelfs()[0]-1]=1;
+                    toast+=" au point rouge";
+                }
 
                 else
                 {toast = "Livre non Trouvé.";}
@@ -448,11 +472,14 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
                     {
                         toast += "es étagères: " + listz.get(1).getShelfs()[0];
                         for (int i = 1; i < listz.get(1).getShelfs().length; i++) {
+                            rayon2 [listz.get(0).getShelfs()[i]-1]=1;
                             toast += ", " + listz.get(1).getShelfs()[i];
                         }
                     }
-                    if (listz.get(0).getShelfs().length == 1)
+                    if (listz.get(0).getShelfs().length == 1){
                         toast += "'étagère: " + listz.get(1).getShelfs()[0];
+                        rayon2[listz.get(0).getShelfs()[0]-1]=1;
+                        }
                     toast+=" au point noir.";
                     Log.e("id0", String.valueOf(listz.get(0).getId()));
                     Log.e("id1", String.valueOf(listz.get(1).getId()));
