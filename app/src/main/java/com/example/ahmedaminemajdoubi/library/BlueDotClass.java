@@ -25,8 +25,9 @@ public class BlueDotClass extends SubsamplingScaleImageView {
     private PointF right_bottom;
     private int id1=0,id2=0;
     private float accuracy;
-    private float bearing1;
-    private float bearing2;
+    private float bearing;
+
+
     public void setAccuracy(float accuracy)
     {
         this.accuracy = accuracy;
@@ -41,8 +42,7 @@ public class BlueDotClass extends SubsamplingScaleImageView {
     }
 
     public void setBearing(float bearing) {
-        bearing1 = (float) ((bearing-20)*(Math.PI/180));
-        bearing2 = (float) ((bearing+20)*(Math.PI/180));
+        this.bearing = (float) ((bearing)*(Math.PI/180));
 
     }
 
@@ -87,7 +87,7 @@ public class BlueDotClass extends SubsamplingScaleImageView {
             float scaledRadius = getScale() * radius;
             Paint paint = new Paint();
             paint.setAntiAlias(true);
-            paint.setColor(getResources().getColor(R.color.ia_blue));
+            paint.setColor(getResources().getColor(R.color.title));
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(7);
             canvas.drawCircle(vPoint.x, vPoint.y, getScale()*accuracy, paint);
@@ -98,20 +98,18 @@ public class BlueDotClass extends SubsamplingScaleImageView {
             paint.setColor(getResources().getColor(R.color.white));
             canvas.drawCircle(vPoint.x, vPoint.y, 1.2f*scaledRadius, paint);
             paint.setAntiAlias(true);
-            paint.setColor(getResources().getColor(R.color.ia_blue));
+            paint.setColor(getResources().getColor(R.color.title));
             canvas.drawCircle(vPoint.x, vPoint.y, scaledRadius, paint);
-            paint.setStrokeWidth(7);
-            paint.setColor(getResources().getColor(R.color.ia_blue));
-            double startx = scaledRadius*Math.cos(bearing1) + vPoint.x;
-            double starty = scaledRadius*Math.sin(bearing1) + vPoint.y;
-            double endx = 5*scaledRadius*Math.cos(bearing1) + vPoint.x;
-            double endy = 5*scaledRadius*Math.sin(bearing1) + vPoint.y;
-            canvas.drawLine((float) startx, (float) starty, (float) endx, (float) endy, paint);
-            startx = scaledRadius*Math.cos(bearing2) + vPoint.x;
-            starty = scaledRadius*Math.sin(bearing2) + vPoint.y;
-            endx = 5*scaledRadius*Math.cos(bearing2) + vPoint.x;
-            endy = 5*scaledRadius*Math.sin(bearing2) + vPoint.y;
-            canvas.drawLine((float) startx, (float) starty, (float) endx, (float) endy, paint);
+            paint.setStrokeWidth(10);
+            paint.setColor(getResources().getColor(R.color.title));
+            double startx = scaledRadius*Math.cos(bearing) + vPoint.x;
+            double starty = scaledRadius*Math.sin(bearing) + vPoint.y;
+            double endx = 2*scaledRadius*Math.cos(bearing) + vPoint.x;
+            double endy = 2*scaledRadius*Math.sin(bearing) + vPoint.y;
+            //canvas.drawLine((float) startx, (float) starty, (float) endx, (float) endy, paint);
+            canvas.drawLine((float) endx, (float) endy,(float) (endx -((endx-startx)*Math.cos(Math.toRadians(55)) - (endy-starty)*Math.sin(Math.toRadians(55)))*1.5) ,(float) (endy -((endy-starty)*Math.cos(Math.toRadians(55)) + (endx-startx)*Math.sin(Math.toRadians(55)))*1.5),paint);
+            canvas.drawLine((float) endx, (float) endy,(float) (endx -((endx-startx)*Math.cos(Math.toRadians(55)) + (endy-starty)*Math.sin(Math.toRadians(55)))*1.5) ,(float) (endy -((endy-starty)*Math.cos(Math.toRadians(55)) - (endx-startx)*Math.sin(Math.toRadians(55)))*1.5),paint);
+
         }
         if(MapActivity.mFloorPlan!=null) {
             if (MapActivity.mFloorPlan.getFloorLevel()==1) {

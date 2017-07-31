@@ -213,7 +213,7 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
         currentDegree = Math.round(event.values[0]);
         //Log.e("compass", String.valueOf(currentDegree));
         if(mImageView!=null && mFloorPlan!=null)
-            mImageView.setBearing(currentDegree-mFloorPlan.getBearing());
+            mImageView.setBearing(currentDegree);
     }
 
     @Override
@@ -229,7 +229,6 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
         if(mFloorPlan!=null) {
             mImageView.setRadius(mFloorPlan.getMetersToPixels() * dotRadius);
             if (mFloorPlan.getFloorLevel() == 1) {
-                //mImageView.setOrientation(180);
                 mImageView.setImage(ImageSource.resource(R.drawable.floor1).tilingDisabled());
             } else if (mFloorPlan.getFloorLevel() == 2) {
                 mImageView.setImage(ImageSource.resource(R.drawable.floor2).tilingDisabled());

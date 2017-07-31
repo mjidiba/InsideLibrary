@@ -7,6 +7,8 @@ import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -122,17 +124,16 @@ public class BookDetails extends AppCompatActivity{
         if (!TextUtils.isEmpty(myBook.getAdditionalTitle()))
             fullTitle += " - " + myBook.getAdditionalTitle();
         bookTitle.setText(fullTitle);
-        bookTitle2.setText("Titre : " + fullTitle);
-        bookEditor.setText("Editeur : "+ myBook.getEditor());
-        bookSection.setText("Section : "+ myBook.getSection());
-        bookCote.setText("Cote : "+ myBook.getCote());
+        bookTitle2.setText(Html.fromHtml("<b>Titre : </b>" + fullTitle));
+        bookEditor.setText(Html.fromHtml("<b>Editeur : </b>"+ myBook.getEditor()));
+        bookSection.setText(Html.fromHtml("<b>Section : </b>"+ myBook.getSection()));
+        bookCote.setText(Html.fromHtml("<b>Côte : </b>"+ myBook.getCote()));
         if(myBook.getSummary().isEmpty())
             summaryCardView.setVisibility(View.INVISIBLE);
         else
             summaryCardView.setVisibility(View.VISIBLE);
-        bookSummary.setText("Resume : " + myBook.getSummary());
-        bookCote.setText("Cote : " + myBook.getCote());
-        bookIsbn.setText("ISBN : " + myBook.getIsbn());
+        bookSummary.setText(Html.fromHtml("<b>Résumé : </b>" + myBook.getSummary()));
+        bookIsbn.setText(Html.fromHtml("<b>ISBN : </b>" + myBook.getIsbn()));
         String allAuthors = new String();
         if (myBook.getAuthors().length != 0) {
             allAuthors = myBook.getAuthors()[0];
@@ -141,7 +142,7 @@ public class BookDetails extends AppCompatActivity{
             allAuthors += ", " + myBook.getAuthors()[i];
         }
         bookAuthor.setText(allAuthors);
-        bookAuthor2.setText("Auteurs : " + allAuthors);
+        bookAuthor2.setText(Html.fromHtml("<b>Auteurs : </b>" + allAuthors));
 
     }
 
@@ -203,5 +204,15 @@ public class BookDetails extends AppCompatActivity{
         NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
         final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
         return !(netInfo == null || !netInfo.isConnected() || !netInfo.isAvailable() || !manager.isProviderEnabled(LocationManager.GPS_PROVIDER));
+    }
+    @SuppressWarnings("deprecation")
+    public static Spanned fromHtml(String html){
+        Spanned result;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            result = Html.fromHtml(html,Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            result = Html.fromHtml(html);
+        }
+        return result;
     }
 }
