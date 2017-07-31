@@ -202,9 +202,6 @@ public class BookDetails extends AppCompatActivity{
         ConnectivityManager conMgr = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
         final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
-        if(netInfo == null || !netInfo.isConnected() || !netInfo.isAvailable() || !manager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-            return false;
-        }
-        return true;
+        return !(netInfo == null || !netInfo.isConnected() || !netInfo.isAvailable() || !manager.isProviderEnabled(LocationManager.GPS_PROVIDER));
     }
 }

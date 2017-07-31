@@ -11,6 +11,10 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.PointF;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -46,27 +50,30 @@ import com.indooratlas.android.sdk.resources.IATask;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class MapActivity extends AppCompatActivity {
+import static com.indooratlas.android.sdk._internal.ar.c.i;
+
+public class MapActivity extends AppCompatActivity implements SensorEventListener {
 
     private static final String TAG = "Logging";
 
     private static final int REQUEST_CODE_WRITE_EXTERNAL_STORAGE = 1;
     private static final int REQUEST_CODE_ACCESS_COARSE_LOCATION = 2;
     public static final float Y1=40.67f ,X1 =49f;
-    public static final float Y2= 26.4f,X2 = 33f;
-    public static final float Y3= 10,X3 = 0;
-    public static final float Y4= 10,X4 = 0;
-    public static final float []  P1={29.6f,21.35f};
+    public static final float Y2= 26.4f,X2 = 33.6f;
+    public static final float Y3= 22.2f,X3 = 65.5f;
+    public static final float Y4= 46.72f,X4 = 83.5f;
+    public static final float []  P1={29.6f,61.74f};
     public static final float []  P2={21.35f,21.35f};
 
     private static final float dotRadius = 1.0f;
     private IALocationManager mIALocationManager;
     private IAResourceManager mFloorPlanManager;
     private IATask<IAFloorPlan> mPendingAsyncResult;
-    private IAFloorPlan mFloorPlan;
+    public static IAFloorPlan mFloorPlan;
     private BlueDotClass mImageView;
     private long mDownloadId;
     private DownloadManager mDownloadManager;
@@ -75,6 +82,8 @@ public class MapActivity extends AppCompatActivity {
     private float [] Y= {0f,0f};
     private CoordinatorLayout coordinatorLayout;
     private TextView bookText;
+    private float currentDegree = 0f;
+    private SensorManager mSensorManager;
 
     private IALocationListener mLocationListener = new IALocationListenerSupport() {
         @Override
@@ -85,6 +94,7 @@ public class MapActivity extends AppCompatActivity {
 
                 PointF point = mFloorPlan.coordinateToPoint(latLng);
                 setPos(point);
+                mImageView.setAccuracy(location.getAccuracy()*mFloorPlan.getMetersToPixels());
                 mImageView.setDotCenter(point);
                 mImageView.postInvalidate();
             }
@@ -125,15 +135,10 @@ public class MapActivity extends AppCompatActivity {
             mImageView = (BlueDotClass) findViewById(R.id.imageView);
 
 
-            mDownloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
             mIALocationManager = IALocationManager.create(this);
             mFloorPlanManager = IAResourceManager.create(this);
-            final String floorPlanId = getString(R.string.indooratlas_floor_plan_id);
-            if (!TextUtils.isEmpty(floorPlanId)) {
-                final IALocation location = IALocation.from(IARegion.floorPlan(floorPlanId));
-                mIALocationManager.setLocation(location);
-            }
             readBookDestination();
+            mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         }
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id
                 .map_layout);
@@ -154,7 +159,8 @@ public class MapActivity extends AppCompatActivity {
         // starts receiving location updates
         mIALocationManager.requestLocationUpdates(IALocationRequest.create(), mLocationListener);
         mIALocationManager.registerRegionListener(mRegionListener);
-        registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+                SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
@@ -162,7 +168,25 @@ public class MapActivity extends AppCompatActivity {
         super.onPause();
         mIALocationManager.removeLocationUpdates(mLocationListener);
         mIALocationManager.unregisterRegionListener(mRegionListener);
-        unregisterReceiver(onComplete);
+        mSensorManager.unregisterListener(this);
+    }
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+
+        // get the angle around the z-axis rotated
+        currentDegree = Math.round(event.values[0]);
+        Log.e("compass", String.valueOf(currentDegree));
+        if(mImageView!=null && mFloorPlan!=null)
+            mImageView.setBearing(currentDegree-mFloorPlan.getBearing());
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
+    private void cancelPendingNetworkCalls() {
+        if (mPendingAsyncResult != null && !mPendingAsyncResult.isCancelled()) {
+            mPendingAsyncResult.cancel();
+        }
     }
 
     /**
@@ -199,18 +223,39 @@ public class MapActivity extends AppCompatActivity {
     };
 
     private void showFloorPlanImage(String filePath) {
-        Log.w(TAG, "showFloorPlanImage: " + filePath);
         mImageView.setRadius(mFloorPlan.getMetersToPixels() * dotRadius);
-        if (mFloorPlan.getFloorLevel()==1)
+        if (mFloorPlan.getFloorLevel()==1){
+            //mImageView.setOrientation(180);
             mImageView.setImage(ImageSource.resource(R.drawable.floor1).tilingDisabled());
-        else if(mFloorPlan.getFloorLevel()==2)
+            }
+        else if(mFloorPlan.getFloorLevel()==2){
             mImageView.setImage(ImageSource.resource(R.drawable.floor2).tilingDisabled());
-        else {Snackbar snackbar = Snackbar
+            }
+        else {
+            Snackbar snackbar = Snackbar
                     .make(coordinatorLayout, "Veuillez Entrer à la Bibliothèque", Snackbar.LENGTH_INDEFINITE);
+        snackbar.show();
+            mImageView.setImage(ImageSource.resource(R.drawable.floor1).tilingDisabled());
+        }
 
-        snackbar.show();}
+
+        //mImageView.setImage(ImageSource.resource(R.drawable.floor1).tilingDisabled());
         setDest();
+        if(listz.get(0).getId()<=6 || listz.get(0).getId()>=16)
+        {
+            mImageView.setId1(1);
+        }
+        else
+            mImageView.setId1(2);
+
+        if(listz.get(1).getId()<=6 || listz.get(1).getId()>=16)
+        {
+            mImageView.setId2(1);
+        }
+        else{
+            mImageView.setId2(2);}
         //mImageView.setImage(ImageSource.uri(filePath));
+
     }
 
     /**
@@ -264,20 +309,9 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
-    private void cancelPendingNetworkCalls() {
-        if (mPendingAsyncResult != null && !mPendingAsyncResult.isCancelled()) {
-            mPendingAsyncResult.cancel();
-        }
-    }
-
 
     private void ensurePermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    REQUEST_CODE_WRITE_EXTERNAL_STORAGE);
-        }
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
@@ -289,7 +323,7 @@ public class MapActivity extends AppCompatActivity {
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.location_permission_request_title)
                         .setMessage(R.string.location_permission_request_rationale)
-                        .setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+                        .setPositiveButton("Accepter", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Log.d(TAG, "request permissions");
@@ -298,11 +332,11 @@ public class MapActivity extends AppCompatActivity {
                                         REQUEST_CODE_ACCESS_COARSE_LOCATION);
                             }
                         })
-                        .setNegativeButton("Deny", new DialogInterface.OnClickListener() {
+                        .setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Toast.makeText(MapActivity.this,
-                                        "Location Access Permission Denied",
+                                        "Accès à la position interdit",
                                         Toast.LENGTH_LONG).show();
                             }
                         })
@@ -316,27 +350,18 @@ public class MapActivity extends AppCompatActivity {
                         REQUEST_CODE_ACCESS_COARSE_LOCATION);
 
             }
+
         }
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
         switch (requestCode) {
-            case REQUEST_CODE_WRITE_EXTERNAL_STORAGE:
-
-                if (grantResults.length == 0
-                        || grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    Toast.makeText(this, "Storage Access Permission Denied",
-                            Toast.LENGTH_LONG).show();
-                    finish();
-                }
-                break;
             case REQUEST_CODE_ACCESS_COARSE_LOCATION:
 
                 if (grantResults.length == 0
                         || grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    Toast.makeText(this, "Location Access Permission Denied",
+                    Toast.makeText(this, "Accès à la position interdit",
                             Toast.LENGTH_LONG).show();
                 }
                 break;
@@ -344,13 +369,14 @@ public class MapActivity extends AppCompatActivity {
 
     }
 
+
     private void readBookDestination(){
-        Destination destination1 = (Destination) getIntent().getParcelableExtra("Destination1");
+        Destination destination1 = getIntent().getParcelableExtra("Destination1");
         Destination destination2 =destination1;
-        int length = (int)getIntent().getIntExtra("length",1);
+        int length = getIntent().getIntExtra("length",1);
 
         if(length>1){
-            destination2 = (Destination) getIntent().getParcelableExtra("Destination2");
+            destination2 = getIntent().getParcelableExtra("Destination2");
         }
         listz.add(destination1);
         listz.add(destination2);
@@ -360,15 +386,16 @@ public class MapActivity extends AppCompatActivity {
         ConnectivityManager conMgr = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
         final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
-        if(netInfo == null || !netInfo.isConnected() || !netInfo.isAvailable() || !manager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-            return false;
-        }
-        return true;
+        return !(netInfo == null || !netInfo.isConnected() || !netInfo.isAvailable() || !manager.isProviderEnabled(LocationManager.GPS_PROVIDER));
     }
 
-    private void setDest(){
+    private void setDest()
+    {
                     for (int i = 0; i < 2; i++) {
-                if (listz.get(0).getId() <= 6) {
+
+
+
+                        if (listz.get(i).getId() <= 6) {
 
                     Y[i] = Y1;
                     X[i] = X1 - 2.23f * (listz.get(i).getId() - 1);
@@ -378,19 +405,22 @@ public class MapActivity extends AppCompatActivity {
                     Y[i] = Y2;
                     X[i] = X2 + 2f * (listz.get(i).getId() - 7);
                 }
-                if (listz.get(i).getId() <= 24 && listz.get(i).getId() >= 15) {
+                if (listz.get(i).getId() <= 24 && listz.get(i).getId() >= 16) {
+                    Log.e("ID is", String.valueOf(listz.get(i).getId()));
                     Y[i] = Y3;
-                    X[i] = X3 - 2.23f * (listz.get(i).getId() - 15);
+                    X[i] = X3 + 2.23f * (listz.get(i).getId() - 16);
                 }
                 if (listz.get(i).getId() >= 25) {
                     Y[i] = Y4;
-                    X[i] = X4 + 2.23f * (listz.get(i).getId() - 25);
+                    X[i] = X4 - 2.23f * (listz.get(i).getId() - 25);
                     if (listz.get(i).getId() > 27) X[i] += 10;
                 }
             }
 
-            PointF destPoint1 = new PointF((X[0]-P1[0])*mFloorPlan.getMetersToPixels(),(Y[0]-P2[0])*mFloorPlan.getMetersToPixels());
-            PointF destPoint2 = new PointF((X[1]-P1[0])*mFloorPlan.getMetersToPixels(),(Y[1]-P2[0])*mFloorPlan.getMetersToPixels());
+            PointF destPoint1 = new PointF (X[0]*mFloorPlan.getMetersToPixels(),Y[0]*mFloorPlan.getMetersToPixels());
+            PointF destPoint2 = new PointF (X[1]*mFloorPlan.getMetersToPixels(),Y[1]*mFloorPlan.getMetersToPixels());
+            destPoint1.set(setPos(destPoint1));
+            destPoint2.set(setPos(destPoint2));
 
             if((listz.get(0).getId()<=15 && mFloorPlan.getFloorLevel()==1) || (listz.get(0).getId()>=16 && mFloorPlan.getFloorLevel()==2))
             {
@@ -450,12 +480,27 @@ public class MapActivity extends AppCompatActivity {
             }
     }
 
-    private PointF setPos(PointF p){
+    public static PointF setPos(PointF p){
 
-        p.x-=P1[mFloorPlan.getFloorLevel()-1]*mFloorPlan.getMetersToPixels();
-        p.y-=P2[mFloorPlan.getFloorLevel()-1]*mFloorPlan.getMetersToPixels();
+        if(mFloorPlan.getFloorLevel()==2)
+        {
+            p.x -= P1[1] * mFloorPlan.getMetersToPixels();
+            p.y -= P2[1] * mFloorPlan.getMetersToPixels();
+        }
+        else
+            {
+                p.x -= P1[0] * mFloorPlan.getMetersToPixels();
+                p.y -= P2[0] * mFloorPlan.getMetersToPixels();
+            }
+
 
         return p;
 
     }
+
+
+
+
+
+
 }

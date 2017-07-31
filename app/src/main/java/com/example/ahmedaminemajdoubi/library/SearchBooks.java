@@ -57,7 +57,7 @@ public class SearchBooks extends AppCompatActivity {
         recyclerView.setAdapter(bookAdapter);
         searchView = (SearchView) findViewById(R.id.search);
         searchView.setQueryHint("Entrez le nom du livre ou auteur");
-        EditText searchEditText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        EditText searchEditText = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         searchEditText.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
         searchEditText.setHintTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -163,9 +163,6 @@ public class SearchBooks extends AppCompatActivity {
         ConnectivityManager conMgr = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
 
-        if(netInfo == null || !netInfo.isConnected() || !netInfo.isAvailable()){
-            return false;
-        }
-        return true;
+        return !(netInfo == null || !netInfo.isConnected() || !netInfo.isAvailable());
     }
 }

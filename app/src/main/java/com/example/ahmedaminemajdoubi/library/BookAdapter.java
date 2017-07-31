@@ -31,9 +31,9 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.MyViewHolder>{
 
         public MyViewHolder(View view) {
             super(view);
-            title = (TextView) view.findViewById(R.id.title);
-            authors = (TextView) view.findViewById(R.id.authors);
-            cover = (ImageView) view.findViewById(R.id.book_cover);
+            title = view.findViewById(R.id.title);
+            authors = view.findViewById(R.id.authors);
+            cover = view.findViewById(R.id.book_cover);
         }
     }
 
