@@ -63,7 +63,7 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
     private static final String TAG = "Logging";
 
     private static final int REQUEST_CODE_WRITE_EXTERNAL_STORAGE = 1;
-    private static final int REQUEST_CODE_ACCESS_COARSE_LOCATION = 2;
+
     public static final float Y1=40.67f ,X1 =49f;
     public static final float Y2= 26.4f,X2 = 33.6f;
     public static final float Y3= 22.2f,X3 = 65.5f;
@@ -89,8 +89,8 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
     private float currentDegree = 0f;
     private SensorManager mSensorManager;
     private ImageView bigImage;
-    private int [] rayon1={0,0,0,0,0,0};
-    private int [] rayon2={0,0,0,0,0,0};
+    private int [] rayon1={0,0,0,0,0,0,0};
+    private int [] rayon2={0,0,0,0,0,0,0};
 
 
     private IALocationListener mLocationListener = new IALocationListenerSupport() {
@@ -147,14 +147,31 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
             mFloorPlanManager = IAResourceManager.create(this);
             readBookDestination();
             mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+            setRayon();
             sImageView1 = (ShelfClass) findViewById(R.id.rayon1);
             sImageView2 = (ShelfClass) findViewById(R.id.rayon2);
-            sImageView2.setShelves(rayon1);
-            sImageView1.setImage(ImageSource.resource(R.drawable.shelves));
+            if (listz.get(0).getId()<=15){
+                sImageView1.setImage(ImageSource.resource(R.drawable.shelf6));
+                sImageView1.setBigId(6);}
+            else
+            {
+                sImageView1.setImage(ImageSource.resource(R.drawable.shelf5));
+                sImageView1.setBigId(5);
+            }
+            sImageView1.setShelves(rayon1);
+
             if(!listz.get(0).equals(listz.get(1)))
             {
-                sImageView2.setImage(ImageSource.resource(R.drawable.shelves));
+                if (listz.get(0).getId()<=15){
+                    sImageView2.setImage(ImageSource.resource(R.drawable.shelf6));
+                    sImageView2.setBigId(6);}
+                else
+                {
+                    sImageView2.setImage(ImageSource.resource(R.drawable.shelf5));
+                    sImageView2.setBigId(5);
+                }
                 sImageView2.setShelves(rayon2);
+
             }
 
         }
@@ -162,7 +179,7 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
         //bookText = (TextView) findViewById(R.id.textView);
         //bookText.setText(getIntent().getStringExtra("book"));
         bigImage = (ImageView) findViewById(R.id.book_cover);
-        //Picasso.with(this).load(BookDetails.bookCoverLink(getIntent().getStringExtra("isbn"),true)).into(bigImage);
+        Picasso.with(this).load(BookDetails.bookCoverLink(getIntent().getStringExtra("isbn"),true)).into(bigImage);
     }
 
     @Override
@@ -208,57 +225,23 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
         }
     }
 
-    /**
-     * Methods for fetching floor plan data and bitmap image.
-     * Method {@link #fetchFloorPlan(String id)} fetches floor plan data including URL to bitmap
-     */
+    private void showFloorPlanImage() {
+        if(mFloorPlan!=null) {
+            mImageView.setRadius(mFloorPlan.getMetersToPixels() * dotRadius);
+            if (mFloorPlan.getFloorLevel() == 1) {
+                //mImageView.setOrientation(180);
+                mImageView.setImage(ImageSource.resource(R.drawable.floor1).tilingDisabled());
+            } else if (mFloorPlan.getFloorLevel() == 2) {
+                mImageView.setImage(ImageSource.resource(R.drawable.floor2).tilingDisabled());
+            } else {
+                Toast.makeText(MapActivity.this,
+                        "Veuillez Entrer à la Bibliothèque",
+                        Toast.LENGTH_LONG).show();
 
-     /*  Broadcast receiver for floor plan image download */
-    private BroadcastReceiver onComplete = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0L);
-            if (id != mDownloadId) {
-                Log.w(TAG, "Ignore unrelated download");
-                return;
             }
-            Log.w(TAG, "Image download completed");
-            Bundle extras = intent.getExtras();
-            DownloadManager.Query q = new DownloadManager.Query();
-            q.setFilterById(extras.getLong(DownloadManager.EXTRA_DOWNLOAD_ID));
-            Cursor c = mDownloadManager.query(q);
-
-            if (c.moveToFirst()) {
-                int status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS));
-                if (status == DownloadManager.STATUS_SUCCESSFUL) {
-                    // process download
-                    String filePath = c.getString(c.getColumnIndex(
-                            DownloadManager.COLUMN_LOCAL_FILENAME));
-                    showFloorPlanImage(filePath);
-                }
-            }
-            c.close();
-        }
-    };
-
-    private void showFloorPlanImage(String filePath) {
-        mImageView.setRadius(mFloorPlan.getMetersToPixels() * dotRadius);
-        if (mFloorPlan.getFloorLevel()==1){
-            //mImageView.setOrientation(180);
-            mImageView.setImage(ImageSource.resource(R.drawable.floor1).tilingDisabled());
-            }
-        else if(mFloorPlan.getFloorLevel()==2){
-            mImageView.setImage(ImageSource.resource(R.drawable.floor2).tilingDisabled());
-            }
-        else {
-            Snackbar snackbar = Snackbar
-                    .make(coordinatorLayout, "Veuillez Entrer à la Bibliothèque", Snackbar.LENGTH_INDEFINITE);
-        snackbar.show();
-            mImageView.setImage(ImageSource.resource(R.drawable.floor1).tilingDisabled());
         }
 
 
-        //mImageView.setImage(ImageSource.resource(R.drawable.floor1).tilingDisabled());
         setDest();
         if(listz.get(0).getId()<=6 || listz.get(0).getId()>=16)
         {
@@ -273,7 +256,6 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
         }
         else{
             mImageView.setId2(2);}
-        //mImageView.setImage(ImageSource.uri(filePath));
 
     }
 
@@ -291,29 +273,9 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
                     Log.d(TAG, "fetch floor plan result:" + result);
                     if (result.isSuccess() && result.getResult() != null) {
                         mFloorPlan = result.getResult();
-                        String fileName = mFloorPlan.getId() + ".img";
-                        String filePath = Environment.getExternalStorageDirectory() + "/"
-                                + Environment.DIRECTORY_DOWNLOADS + "/" + fileName;
-                        File file = new File(filePath);
-                        if (!file.exists()) {
-                            DownloadManager.Request request =
-                                    new DownloadManager.Request(Uri.parse(mFloorPlan.getUrl()));
-                            request.setDescription("IndoorAtlas floor plan");
-                            request.setTitle("Floor plan");
-                            // requires android 3.2 or later to compile
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                                request.allowScanningByMediaScanner();
-                                request.setNotificationVisibility(DownloadManager.
-                                        Request.VISIBILITY_HIDDEN);
-                            }
-                            request.setDestinationInExternalPublicDir(Environment.
-                                    DIRECTORY_DOWNLOADS, fileName);
-
-                            mDownloadId = mDownloadManager.enqueue(request);
-                        } else {
-                            showFloorPlanImage(filePath);
-                        }
-                    } else {
+                        showFloorPlanImage();
+                    }
+                    else {
                         // do something with error
                         if (!asyncResult.isCancelled()) {
                             Toast.makeText(MapActivity.this,
@@ -330,64 +292,29 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
 
 
     private void ensurePermissions() {
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-
-            // we don't have access to coarse locations, hence we have not access to wifi either
-            // check if this requires explanation to user
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION)) {
-
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.location_permission_request_title)
-                        .setMessage(R.string.location_permission_request_rationale)
-                        .setPositiveButton("Accepter", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Log.d(TAG, "request permissions");
-                                ActivityCompat.requestPermissions(MapActivity.this,
-                                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                                        REQUEST_CODE_ACCESS_COARSE_LOCATION);
-                            }
-                        })
-                        .setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(MapActivity.this,
-                                        "Accès à la position interdit",
-                                        Toast.LENGTH_LONG).show();
-                            }
-                        })
-                        .show();
-
-            } else {
-
-                // ask user for permission
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                        REQUEST_CODE_ACCESS_COARSE_LOCATION);
-
-            }
-
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_CODE_WRITE_EXTERNAL_STORAGE);
         }
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
         switch (requestCode) {
-            case REQUEST_CODE_ACCESS_COARSE_LOCATION:
+            case REQUEST_CODE_WRITE_EXTERNAL_STORAGE:
 
                 if (grantResults.length == 0
                         || grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    Toast.makeText(this, "Accès à la position interdit",
+                    Toast.makeText(this, "Accès à la mémoire interdit",
                             Toast.LENGTH_LONG).show();
+                    finish();
                 }
                 break;
         }
 
     }
-
 
     private void readBookDestination(){
         Destination destination1 = getIntent().getParcelableExtra("Destination1");
@@ -441,70 +368,54 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
             destPoint1.set(setPos(destPoint1));
             destPoint2.set(setPos(destPoint2));
 
-            if((listz.get(0).getId()<=15 && mFloorPlan.getFloorLevel()==1) || (listz.get(0).getId()>=16 && mFloorPlan.getFloorLevel()==2))
+            if((listz.get(0).getId()<=15 && mFloorPlan.getFloorLevel()==1) || (mFloorPlan.getFloorLevel()==2 && listz.get(0).getId()>=16) )
             {
-
-
-                String toast = new String("Le livre se trouve dans l");
-                if (listz.get(0).getShelfs().length > 1)
-                {
-                    toast += "es étagères: " + listz.get(0).getShelfs()[0];
-                    for (int i = 1; i < listz.get(0).getShelfs().length; i++)
-                    {
-                        rayon1 [listz.get(0).getShelfs()[i]-1]=1;
-                        toast += ", " + listz.get(0).getShelfs()[i];
-                    }
-                    toast+=" au point rouge";
-                }
-                if (listz.get(0).getShelfs().length == 1)
-                {
-                    toast += "'étagère: " + listz.get(0).getShelfs()[0];
-                    rayon1[listz.get(0).getShelfs()[0]-1]=1;
-                    toast+=" au point rouge";
-                }
-
-                else
-                {toast = "Livre non Trouvé.";}
                 if(listz.get(0).getId()!=listz.get(1).getId())
                 {   mImageView.setDestCenter(destPoint2,destPoint1);
-                    toast+=" ou bien dans l";
-                    if (listz.get(1).getShelfs().length > 1)
-                    {
-                        toast += "es étagères: " + listz.get(1).getShelfs()[0];
-                        for (int i = 1; i < listz.get(1).getShelfs().length; i++) {
-                            rayon2 [listz.get(0).getShelfs()[i]-1]=1;
-                            toast += ", " + listz.get(1).getShelfs()[i];
-                        }
-                    }
-                    if (listz.get(0).getShelfs().length == 1){
-                        toast += "'étagère: " + listz.get(1).getShelfs()[0];
-                        rayon2[listz.get(0).getShelfs()[0]-1]=1;
-                        }
-                    toast+=" au point noir.";
-                    Log.e("id0", String.valueOf(listz.get(0).getId()));
-                    Log.e("id1", String.valueOf(listz.get(1).getId()));
+
                 }
+
                 else    mImageView.setDestCenter(destPoint1,destPoint2);
 
 
-                Snackbar snackbar = Snackbar
-                        .make(coordinatorLayout, toast, Snackbar.LENGTH_INDEFINITE);
 
-                snackbar.show();
 
             }
 
             else
             {
                 if(mFloorPlan.getFloorLevel()==1)
-                {   Snackbar snackbar = Snackbar
-                            .make(coordinatorLayout, "Le Livre se trouve à la Mezzanine", Snackbar.LENGTH_INDEFINITE);
-                    snackbar.show();}
+                {
+                    Toast.makeText(MapActivity.this, "Le Livre se trouve à la Mezzanine", Toast.LENGTH_SHORT).show();
+                }
                 if(mFloorPlan.getFloorLevel()==2)
-                {   Snackbar snackbar = Snackbar
-                            .make(coordinatorLayout, "Le Livre se trouve à la Salle de Lecture", Snackbar.LENGTH_INDEFINITE);
-                    snackbar.show();}
+                {
+                    Toast.makeText(MapActivity.this, "Le Livre se trouve à la Salle de Lecture", Toast.LENGTH_SHORT).show();
+                }
             }
+    }
+
+    public void setRayon() {
+
+        if (listz.get(0).getId() <= 15 || listz.get(0).getId() >= 16) {
+            Log.i("entered", "test");
+
+            for (int miniShelf : listz.get(0).getShelfs()) {
+                rayon1[miniShelf - 1] = 1;
+            }
+            rayon1[6]=1;
+
+        }
+        if(listz.get(0).getId()!=listz.get(1).getId())
+        {
+            for(int miniShelf : listz.get(1).getShelfs()){
+                rayon2[miniShelf-1] = 1;
+            }
+            rayon2[6]=2;
+
+
+        }
+
     }
 
     public static PointF setPos(PointF p){

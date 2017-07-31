@@ -7,7 +7,6 @@ import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -39,7 +38,7 @@ public class BookDetails extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_details);
-        bookCover = (ImageView) findViewById(R.id.bookCover);
+        bookCover = (ImageView) findViewById(R.id.book_cover);
         bigImage = (ImageView) findViewById(R.id.bookCoverLarge);
         bookTitle = (TextView) findViewById(R.id.bookTitle);
         bookAuthor = (TextView) findViewById(R.id.bookAuthor);
@@ -60,7 +59,7 @@ public class BookDetails extends AppCompatActivity{
 
     public void zoomImage(View view){
         ImageView image = (ImageView) view;
-        if(image.getId() == R.id.bookCover){
+        if(image.getId() == R.id.book_cover){
             String bigCoverImageUri = bookCoverLink(myBook.getIsbn(),true);
             Picasso.with(this).load(bigCoverImageUri).into(bigImage);
             bigImage.setVisibility(View.VISIBLE);

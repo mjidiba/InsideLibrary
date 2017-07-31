@@ -18,12 +18,19 @@ import java.util.List;
  */
 
 public class ShelfClass extends  SubsamplingScaleImageView{
-    private static final int LEFT=0;
-    private static final int TOP=40;
-    private static final int RIGHT=750;
-    private static final int BOTTOM=136;
-    private static final int OFFSET=176;
+    private static final int LEFT6=332;
+    private static final int TOP6=323;
+    private static final int RIGHT6=2177;
+    private static final int BOTTOM6=813;
+    private static final int OFFSET6=548;
+    private static final int LEFT5=332;
+    private static final int TOP5=323;
+    private static final int RIGHT5=2177;
+    private static final int BOTTOM5=813;
+    private static final int OFFSET5=548;
     private int[] shelfId = null;
+    private int color;
+    private int bigId;
 
 
 
@@ -42,6 +49,16 @@ public class ShelfClass extends  SubsamplingScaleImageView{
         setPanLimit(SubsamplingScaleImageView.PAN_LIMIT_CENTER);
     }
 
+    public void setColor(int color)
+    {
+        this.color=color;
+    }
+
+    public void setBigId(int bigId)
+    {
+        this.bigId=bigId;
+    }
+
 
     public void setShelves(int [] shelfId)
     {
@@ -56,21 +73,28 @@ public class ShelfClass extends  SubsamplingScaleImageView{
 
         if(shelfId!=null)
         {   paint.setAntiAlias(true);
-            paint.setStyle(Paint.Style.FILL);
-            paint.setColor(getResources().getColor(R.color.ia_blue));
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(12);
+            if(shelfId[6]==1)
+            paint.setColor(getResources().getColor(R.color.dest_circle));
+            else if(shelfId[6]==2)
+                paint.setColor(getResources().getColor(R.color.bg_screen2));
+
             for (int i=0;i<6;i++)
             {
                 if(shelfId[i]!=0)
-                {
-                    PointF left_top = sourceToViewCoord(new PointF(LEFT,TOP+i*OFFSET));
-                    PointF right_bottom = sourceToViewCoord(LEFT+RIGHT,BOTTOM+TOP+i*OFFSET);
-
-                    canvas.drawRect(left_top.x,left_top.y,right_bottom.x,right_bottom.y,paint);
-                    Log.e("Left", String.valueOf(left_top.x));
-                    Log.e("Top", String.valueOf(left_top.y));
-                    Log.e("Right", String.valueOf(right_bottom.x));
-                    Log.e("Bottom", String.valueOf(right_bottom.y));
-                    Log.e("i", String.valueOf(i));
+                {   if(bigId==6)
+                        {
+                            PointF left_top = sourceToViewCoord(new PointF(LEFT6,TOP6+i*OFFSET6));
+                            PointF right_bottom = sourceToViewCoord(RIGHT6,BOTTOM6+i*OFFSET6);
+                            canvas.drawRect(left_top.x,left_top.y,right_bottom.x,right_bottom.y,paint);
+                        }
+                    else
+                        {
+                            PointF left_top = sourceToViewCoord(new PointF(LEFT6,TOP6+i*OFFSET6));
+                            PointF right_bottom = sourceToViewCoord(RIGHT6,BOTTOM6+i*OFFSET6);
+                            canvas.drawRect(left_top.x,left_top.y,right_bottom.x,right_bottom.y,paint);
+                        }
 
                 }
             }

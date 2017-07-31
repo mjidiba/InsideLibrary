@@ -27,7 +27,7 @@
 
 
         <ImageView
-            android:id="@+id/bookCover"
+            android:id="@+id/book_cover"
             android:layout_width="100dp"
             android:layout_height="134dp"
             android:layout_marginLeft="20dp"
@@ -56,9 +56,9 @@
             android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintLeft_toRightOf="@+id/bookCover"
+            app:layout_constraintLeft_toRightOf="@+id/book_cover"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/bookCover" />
+            app:layout_constraintTop_toTopOf="@+id/book_cover" />
 
         <TextView
             android:id="@+id/bookAuthor"
@@ -76,7 +76,7 @@
             android:textColor="@color/white"
             android:textSize="15sp"
             android:textStyle="italic"
-            app:layout_constraintLeft_toRightOf="@+id/bookCover"
+            app:layout_constraintLeft_toRightOf="@+id/book_cover"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/bookTitle" />
 

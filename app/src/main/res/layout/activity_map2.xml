@@ -29,12 +29,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 />
+
             <ImageView
-                android:id="@+id/bookCover"
-                android:layout_width="213dp"
+                android:id="@+id/book_cover"
+                android:layout_width="300dp"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:background="@drawable/book_placeholder2"
-                android:scaleType="centerInside" />
+                android:scaleType="fitXY" />
 
             <com.example.ahmedaminemajdoubi.library.ShelfClass
                 android:id="@+id/rayon2"
@@ -47,12 +50,8 @@
 
     <com.example.ahmedaminemajdoubi.library.BlueDotClass
         android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="0dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

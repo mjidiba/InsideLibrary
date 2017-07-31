@@ -87,10 +87,12 @@ public class BlueDotClass extends SubsamplingScaleImageView {
             float scaledRadius = getScale() * radius;
             Paint paint = new Paint();
             paint.setAntiAlias(true);
-            paint.setStyle(Paint.Style.FILL);
-            paint.setStrokeWidth(7);
             paint.setColor(getResources().getColor(R.color.ia_blue));
-            paint.setAlpha(14);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(7);
+            canvas.drawCircle(vPoint.x, vPoint.y, getScale()*accuracy, paint);
+            paint.setColor(getResources().getColor(R.color.ia_blue));
+            paint.setAlpha(100);
             canvas.drawCircle(vPoint.x, vPoint.y, getScale()*accuracy, paint);
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(getResources().getColor(R.color.white));
@@ -200,7 +202,7 @@ public class BlueDotClass extends SubsamplingScaleImageView {
             left_top=sourceToViewCoord(left_top);
             right_bottom=sourceToViewCoord(right_bottom);
             paint.setStyle(Paint.Style.FILL);
-            paint.setColor(getResources().getColor(R.color.dest_circle));
+            paint.setColor(getResources().getColor(R.color.bg_screen2));
             canvas.drawRect(left_top.x,left_top.y,right_bottom.x,right_bottom.y,paint);
             paint.setStyle(Paint.Style.STROKE);
             paint.setColor(getResources().getColor(R.color.title));

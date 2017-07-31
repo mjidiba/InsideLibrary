@@ -17,9 +17,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import static com.example.ahmedaminemajdoubi.library.BookDetails.bookCoverLink;
-import static com.example.ahmedaminemajdoubi.library.R.id.bookCover;
-
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.MyViewHolder>{
 
     private List<Book> bookList;
