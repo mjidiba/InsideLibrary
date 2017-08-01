@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Library</string>
+    <string name="app_name">Inside Libary</string>
     <string name="string_enter_name">Name</string>
     <string name="string_choose_username">Email</string>
     <string name="string_choose_password">Password</string>

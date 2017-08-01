@@ -23,11 +23,11 @@ public class ShelfClass extends  SubsamplingScaleImageView{
     private static final int RIGHT6=2177;
     private static final int BOTTOM6=813;
     private static final int OFFSET6=548;
-    private static final int LEFT5=332;
-    private static final int TOP5=323;
-    private static final int RIGHT5=2177;
-    private static final int BOTTOM5=813;
-    private static final int OFFSET5=548;
+    private static final int LEFT5=260;
+    private static final int TOP5=270;
+    private static final int RIGHT5=1903;
+    private static final int BOTTOM5=647;
+    private static final int OFFSET5=430;
     private int[] shelfId = null;
     private int color;
     private int bigId;
@@ -91,8 +91,8 @@ public class ShelfClass extends  SubsamplingScaleImageView{
                         }
                     else
                         {
-                            PointF left_top = sourceToViewCoord(new PointF(LEFT6,TOP6+i*OFFSET6));
-                            PointF right_bottom = sourceToViewCoord(RIGHT6,BOTTOM6+i*OFFSET6);
+                            PointF left_top = sourceToViewCoord(new PointF(LEFT5,TOP5+i*OFFSET5));
+                            PointF right_bottom = sourceToViewCoord(RIGHT5,BOTTOM5+i*OFFSET5);
                             canvas.drawRect(left_top.x,left_top.y,right_bottom.x,right_bottom.y,paint);
                         }
 
