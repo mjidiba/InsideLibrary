@@ -23,13 +23,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Looper;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,6 +74,7 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
     public static final float []  P1={29.6f,61.74f};
     public static final float []  P2={21.35f,21.35f};
 
+    private HorizontalScrollView horizontalScrollView;
     private static final float dotRadius = 1.0f;
     private IALocationManager mIALocationManager;
     private IAResourceManager mFloorPlanManager;
@@ -79,13 +83,9 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
     private BlueDotClass mImageView;
     private ShelfClass sImageView1;
     private ShelfClass sImageView2;
-    private long mDownloadId;
-    private DownloadManager mDownloadManager;
     private List<Destination> listz = new ArrayList<Destination>();
     private float [] X= {0f,0f};
     private float [] Y= {0f,0f};
-    private CoordinatorLayout coordinatorLayout;
-    private TextView bookText;
     private float currentDegree = 0f;
     private SensorManager mSensorManager;
     private ImageView bigImage;
@@ -141,8 +141,14 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
                 .show();
         else{
             mImageView = (BlueDotClass) findViewById(R.id.imageView);
-
-
+            bigImage = (ImageView) findViewById(R.id.book_cover);
+            horizontalScrollView = (HorizontalScrollView) findViewById(R.id.horizontalScrollView);
+            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) horizontalScrollView.getLayoutParams();
+            DisplayMetrics metrics = new DisplayMetrics();
+            this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            layoutParams.bottomMargin = metrics.heightPixels*6/15;
+            bigImage.getLayoutParams().width = 180*metrics.heightPixels/640*18/15;
+            Picasso.with(this).load(BookDetails.bookCoverLink(getIntent().getStringExtra("isbn"),true)).into(bigImage);
             mIALocationManager = IALocationManager.create(this);
             mFloorPlanManager = IAResourceManager.create(this);
             readBookDestination();
@@ -178,8 +184,6 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
         //coordinatorLayout = (CoordinatorLayout) findViewById(R.id.map_layout);
         //bookText = (TextView) findViewById(R.id.textView);
         //bookText.setText(getIntent().getStringExtra("book"));
-        bigImage = (ImageView) findViewById(R.id.book_cover);
-        Picasso.with(this).load(BookDetails.bookCoverLink(getIntent().getStringExtra("isbn"),true)).into(bigImage);
     }
 
     @Override
@@ -212,8 +216,14 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
         // get the angle around the z-axis rotated
         currentDegree = Math.round(event.values[0]);
         //Log.e("compass", String.valueOf(currentDegree));
-        if(mImageView!=null && mFloorPlan!=null)
+        if(mImageView!=null && mFloorPlan!=null){
+            if(currentDegree<180)
+                currentDegree+=180;
+            else
+                currentDegree-=180;
+
             mImageView.setBearing(currentDegree);
+        Log.e("Degs", String.valueOf(currentDegree));}
     }
 
     @Override

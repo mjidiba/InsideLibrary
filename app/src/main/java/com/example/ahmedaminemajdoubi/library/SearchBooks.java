@@ -39,7 +39,9 @@ import okhttp3.Response;
 
 public class SearchBooks extends AppCompatActivity {
 
-    private static final String REGISTER_URL = "http://10.1.32.94:8888/Library/searchBooks.php";
+    //private static final String REGISTER_URL = "http://10.1.32.94:8888/Library/searchBooks.php";
+    private static final String REGISTER_URL = "http://webeleves.emines.um6p.ma/php_library/Searchbooks.php";
+
     List<Book> bookList;
     private RecyclerView recyclerView;
     private BookAdapter bookAdapter;
@@ -122,6 +124,7 @@ public class SearchBooks extends AppCompatActivity {
                 public void onResponse(Call call, Response response) throws IOException {
                     final Gson gson = new Gson();
                     final Book[] books = gson.fromJson(response.body().charStream(), Book[].class);
+                    Log.i("books", String.valueOf(books.length));
                     bookList.clear();
                     for (int i = 0; i < books.length; i++) {
                         bookList.add(books[i]);

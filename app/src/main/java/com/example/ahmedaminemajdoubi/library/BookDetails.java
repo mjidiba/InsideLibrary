@@ -29,7 +29,8 @@ import okhttp3.Response;
 
 public class BookDetails extends AppCompatActivity{
 
-    private static final String REGISTER_URL = "http://10.1.32.94:8888/Library/findBooklocation.php";
+    //private static final String REGISTER_URL = "http://10.1.32.94:8888/Library/findBooklocation.php";
+    private static final String REGISTER_URL = "http://webeleves.emines.um6p.ma/php_library/findBooklocation.php";
     private Button buttonDestination;
     private ImageView bookCover, bigImage;
     private CardView summaryCardView;
