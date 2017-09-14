@@ -83,7 +83,7 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
     private BlueDotClass mImageView;
     private ShelfClass sImageView1;
     private ShelfClass sImageView2;
-    private List<Destination> listz = new ArrayList<Destination>();
+    public static List<Destination> listz = new ArrayList<Destination>();
     private float [] X= {0f,0f};
     private float [] Y= {0f,0f};
     private float currentDegree = 0f;
@@ -102,7 +102,15 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
 
                 PointF point = mFloorPlan.coordinateToPoint(latLng);
                 setPos(point);
+
+                if(listz.get(0).getId()>15)
+                {
+                    point = new PointF(510,560);
+                    mImageView.setAccuracy(0);
+                }
+                else
                 mImageView.setAccuracy(location.getAccuracy()*mFloorPlan.getMetersToPixels());
+
                 mImageView.setDotCenter(point);
                 mImageView.postInvalidate();
             }
@@ -156,6 +164,8 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
             setRayon();
             sImageView1 = (ShelfClass) findViewById(R.id.rayon1);
             sImageView2 = (ShelfClass) findViewById(R.id.rayon2);
+            sImageView1.setZoomEnabled(false);
+            sImageView2.setZoomEnabled(false);
             if (listz.get(0).getId()<=15){
                 sImageView1.setImage(ImageSource.resource(R.drawable.shelf6));
                 sImageView1.setBigId(6);}
@@ -181,9 +191,6 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
             }
 
         }
-        //coordinatorLayout = (CoordinatorLayout) findViewById(R.id.map_layout);
-        //bookText = (TextView) findViewById(R.id.textView);
-        //bookText.setText(getIntent().getStringExtra("book"));
     }
 
     @Override
@@ -238,20 +245,25 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
     private void showFloorPlanImage() {
         if(mFloorPlan!=null) {
             mImageView.setRadius(mFloorPlan.getMetersToPixels() * dotRadius);
-            if (mFloorPlan.getFloorLevel() == 1) {
+            if (listz.get(0).getId()<=15 && mFloorPlan.getFloorLevel()==1) {
                 mImageView.setImage(ImageSource.resource(R.drawable.floor1).tilingDisabled());
-            } else if (mFloorPlan.getFloorLevel() == 2) {
+            } else if (listz.get(0).getId()>15) {
                 mImageView.setImage(ImageSource.resource(R.drawable.floor2).tilingDisabled());
-            } else {
+                Toast.makeText(MapActivity.this,
+                        "La localisation n'est pas disponible à la Mezzanine",
+                        Toast.LENGTH_LONG).show();
+            }
+
+            else if (mFloorPlan.getFloorLevel()==0){
                 Toast.makeText(MapActivity.this,
                         "Veuillez Entrer à la Bibliothèque",
                         Toast.LENGTH_LONG).show();
 
             }
+            setDest();
+
         }
 
-
-        setDest();
         if(listz.get(0).getId()<=6 || listz.get(0).getId()>=16)
         {
             mImageView.setId1(1);

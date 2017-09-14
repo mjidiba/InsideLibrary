@@ -20,6 +20,9 @@
     <color name="orangelight">#F3AE1B</color>
     <color name="orangedark">#BB6008</color>
     <color name="black">#000000</color>
+    <color name="orangeEmines">#D2691E</color>
+    <color name="cream">#F5FFFA</color>
+
 
     <!-- Screens background color-->
     <color name="bg_screen1">#3F51B5</color>
