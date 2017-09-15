@@ -45,7 +45,6 @@ public class BlueDotClass extends SubsamplingScaleImageView {
 
     public void setBearing(float bearing) {
         this.bearing = (float) ((bearing)*(Math.PI/180));
-
     }
 
     public void setDestCenter(PointF destCenter1, PointF destCenter2) {
@@ -54,10 +53,14 @@ public class BlueDotClass extends SubsamplingScaleImageView {
     }
 
     public void setId1(int id1)
-    {this.id1=id1;}
+    {
+        this.id1=id1;
+    }
 
     public void setId2(int id2)
-    {this.id2=id2;}
+    {
+        this.id2=id2;
+    }
 
 
     public BlueDotClass(Context context) {
@@ -113,7 +116,6 @@ public class BlueDotClass extends SubsamplingScaleImageView {
             canvas.drawLine((float) endx, (float) endy,(float) (endx -((endx-startx)*Math.cos(Math.toRadians(55)) + (endy-starty)*Math.sin(Math.toRadians(55)))*1.5) ,(float) (endy -((endy-starty)*Math.cos(Math.toRadians(55)) - (endx-startx)*Math.sin(Math.toRadians(55)))*1.5),paint);
 
         }
-        if(MapActivity.mFloorPlan!=null) {
             if (listz.get(0).getId()<=15) {
                 paint.setAntiAlias(true);
 
@@ -152,6 +154,8 @@ public class BlueDotClass extends SubsamplingScaleImageView {
             }
             else if (listz.get(0).getId()>15)
             {
+                paint.setAntiAlias(true);
+
                 for (int i = 0; i < 9; i++)
                 {
                     paint.setStyle(Paint.Style.FILL);
@@ -167,6 +171,7 @@ public class BlueDotClass extends SubsamplingScaleImageView {
                     paint.setColor(getResources().getColor(R.color.title));
                     paint.setStrokeWidth(5);
                     canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
+                    Log.e("Draw", String.valueOf(listz.get(0).getId()));
                 }
                 for (int i = 0; i < 6; i++)
                 {
@@ -184,90 +189,12 @@ public class BlueDotClass extends SubsamplingScaleImageView {
                     paint.setStrokeWidth(5);
                     canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
                 }
-            }
         }
-
-        else
-            {
-                if (id1==1)
-                {
-                    paint.setAntiAlias(true);
-
-                    for (int i = 0; i < 6; i++) {
-                        paint.setStyle(Paint.Style.FILL);
-                        paint.setColor(getResources().getColor(R.color.maron));
-                        left_top = new PointF((MapActivity.X1 - 1.11f - 2.23f * i - ((i>=3) ? 1:0 ) *3.6f) * pix, (MapActivity.Y1 - 0.4f) * pix);
-                        right_bottom = new PointF((MapActivity.X1 + 1.11f - 2.23f * i - ((i>=3) ? 1:0 )*3.6f) * pix, (MapActivity.Y1 + 0.4f) * pix);
-                        left_top.set(MapActivity.setPos(left_top));
-                        right_bottom.set(MapActivity.setPos(right_bottom));
-                        left_top.set(sourceToViewCoord(left_top));
-                        right_bottom.set(sourceToViewCoord(right_bottom));
-                        canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
-                        paint.setStyle(Paint.Style.STROKE);
-                        paint.setColor(getResources().getColor(R.color.title));
-                        paint.setStrokeWidth(5);
-                        canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
-                    }
-
-
-                    for (int i = 0; i < 9; i++) {
-                        paint.setStyle(Paint.Style.FILL);
-                        paint.setColor(getResources().getColor(R.color.maron));
-                        left_top.set(new PointF((MapActivity.X2 - 1f + 2f * i) * pix, (MapActivity.Y2 - 0.4f) * pix));
-                        right_bottom.set(new PointF((MapActivity.X2 + 1f + 2f * i) * pix, (MapActivity.Y2 + 0.4f) * pix));
-                        left_top.set(MapActivity.setPos(left_top));
-                        right_bottom.set(MapActivity.setPos(right_bottom));
-                        left_top.set(sourceToViewCoord(left_top));
-                        right_bottom.set(sourceToViewCoord(right_bottom));
-                        canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
-                        paint.setStyle(Paint.Style.STROKE);
-                        paint.setColor(getResources().getColor(R.color.title));
-                        paint.setStrokeWidth(5);
-                        canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
-                    }
-                }
-                else if (id1==2)
-                    {
-                        for (int i = 0; i < 9; i++)
-                        {
-                            paint.setStyle(Paint.Style.FILL);
-                            paint.setColor(getResources().getColor(R.color.maron));
-                            left_top = new PointF((MapActivity.X3 - 1.11f + 2.23f * i) * pix, (MapActivity.Y3 - 0.4f) * pix);
-                            right_bottom=new PointF((MapActivity.X3 + 1.11f + 2.23f * i) * pix, (MapActivity.Y3 + 0.4f) * pix);
-                            left_top.set(MapActivity.setPos(left_top));
-                            right_bottom.set(MapActivity.setPos(right_bottom));
-                            left_top.set(sourceToViewCoord(left_top));
-                            right_bottom.set(sourceToViewCoord(right_bottom));
-                            canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
-                            paint.setStyle(Paint.Style.STROKE);
-                            paint.setColor(getResources().getColor(R.color.title));
-                            paint.setStrokeWidth(5);
-                            canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
-                        }
-                        for (int i = 0; i < 6; i++)
-                        {
-                            paint.setStyle(Paint.Style.FILL);
-                            paint.setColor(getResources().getColor(R.color.maron));
-                            left_top = new PointF((MapActivity.X4 - 1.11f - 2.23f * i - ((i>=3) ? 1:0 ) *6.83f) * pix, (MapActivity.Y4 - 0.4f) * pix);
-                            right_bottom = new PointF((MapActivity.X4 + 1.11f - 2.23f * i - ((i>=3) ? 1:0 )*6.83f) * pix, (MapActivity.Y4 + 0.4f) * pix);
-                            left_top.set(MapActivity.setPos(left_top));
-                            right_bottom.set(MapActivity.setPos(right_bottom));
-                            left_top.set(sourceToViewCoord(left_top));
-                            right_bottom.set(sourceToViewCoord(right_bottom));
-                            canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
-                            paint.setStyle(Paint.Style.STROKE);
-                            paint.setColor(getResources().getColor(R.color.title));
-                            paint.setStrokeWidth(5);
-                            canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
-                        }
-                    }
-            }
 
         if (destCenter1 != null) {
             PointF vPoint = destCenter1;
             if(id1==1)
-            {       Log.e("The Id of", String.valueOf(id1));
-                    left_top=new PointF(vPoint.x - 1.11f*pix,vPoint.y-0.4f*pix);
+            {       left_top=new PointF(vPoint.x - 1.11f*pix,vPoint.y-0.4f*pix);
                     right_bottom=new PointF(vPoint.x + 1.11f*pix,vPoint.y+0.4f*pix);
             }
             else

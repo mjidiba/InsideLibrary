@@ -10,6 +10,7 @@ import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -56,6 +57,7 @@ public class BookDetails extends AppCompatActivity{
         summaryCardView = (CardView) findViewById(R.id.SummaryCardView);
 
         myBook = getIntent().getParcelableExtra("book");
+        Log.e("Book",myBook.getTitle());
         displayBook();
 
     }

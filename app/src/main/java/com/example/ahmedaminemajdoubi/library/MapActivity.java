@@ -244,17 +244,19 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
 
     private void showFloorPlanImage() {
         if(mFloorPlan!=null) {
+            Log.e("List", String.valueOf(listz.get(0).getId()));
             mImageView.setRadius(mFloorPlan.getMetersToPixels() * dotRadius);
             if (listz.get(0).getId()<=15 && mFloorPlan.getFloorLevel()==1) {
                 mImageView.setImage(ImageSource.resource(R.drawable.floor1).tilingDisabled());
-            } else if (listz.get(0).getId()>15) {
+            }
+            else if (listz.get(0).getId()>15) {
                 mImageView.setImage(ImageSource.resource(R.drawable.floor2).tilingDisabled());
                 Toast.makeText(MapActivity.this,
                         "La localisation n'est pas disponible à la Mezzanine",
                         Toast.LENGTH_LONG).show();
             }
 
-            else if (mFloorPlan.getFloorLevel()==0){
+            else {
                 Toast.makeText(MapActivity.this,
                         "Veuillez Entrer à la Bibliothèque",
                         Toast.LENGTH_LONG).show();
@@ -341,12 +343,13 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
         Destination destination1 = getIntent().getParcelableExtra("Destination1");
         Destination destination2 =destination1;
         int length = getIntent().getIntExtra("length",1);
-
+        listz.clear();
         if(length>1){
             destination2 = getIntent().getParcelableExtra("Destination2");
         }
         listz.add(destination1);
         listz.add(destination2);
+
     }
 
     public boolean wifiAndLocation() {
@@ -389,7 +392,7 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
             destPoint1.set(setPos(destPoint1));
             destPoint2.set(setPos(destPoint2));
 
-            if((listz.get(0).getId()<=15 && mFloorPlan.getFloorLevel()==1) || (mFloorPlan.getFloorLevel()==2 && listz.get(0).getId()>=16) )
+            if((listz.get(0).getId()<=15 && mFloorPlan.getFloorLevel()==1) || (listz.get(0).getId()>=16) )
             {
                 if(listz.get(0).getId()!=listz.get(1).getId())
                 {   mImageView.setDestCenter(destPoint2,destPoint1);
@@ -441,7 +444,7 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
 
     public static PointF setPos(PointF p){
 
-        if(mFloorPlan.getFloorLevel()==2)
+        if(listz.get(0).getId()>15)
         {
             p.x -= P1[1] * mFloorPlan.getMetersToPixels();
             p.y -= P2[1] * mFloorPlan.getMetersToPixels();
