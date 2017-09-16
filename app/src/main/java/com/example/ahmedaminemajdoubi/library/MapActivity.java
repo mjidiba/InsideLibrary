@@ -124,7 +124,6 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
             if (region.getType() == IARegion.TYPE_FLOOR_PLAN) {
                 String id = region.getId();
                 Log.d(TAG, "floorPlan changed to " + id);
-                Toast.makeText(MapActivity.this, id, Toast.LENGTH_SHORT).show();
                 fetchFloorPlan(id);
             }
         }
@@ -243,25 +242,27 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
     }
 
     private void showFloorPlanImage() {
+
+        if (listz.get(0).getId()>15) {
+            mImageView.setImage(ImageSource.resource(R.drawable.floor2).tilingDisabled());
+            Toast.makeText(MapActivity.this,
+                    "La localisation n'est pas disponible à la Mezzanine",
+                    Toast.LENGTH_LONG).show();
+        }
         if(mFloorPlan!=null) {
             Log.e("List", String.valueOf(listz.get(0).getId()));
             mImageView.setRadius(mFloorPlan.getMetersToPixels() * dotRadius);
             if (listz.get(0).getId()<=15 && mFloorPlan.getFloorLevel()==1) {
                 mImageView.setImage(ImageSource.resource(R.drawable.floor1).tilingDisabled());
             }
-            else if (listz.get(0).getId()>15) {
-                mImageView.setImage(ImageSource.resource(R.drawable.floor2).tilingDisabled());
-                Toast.makeText(MapActivity.this,
-                        "La localisation n'est pas disponible à la Mezzanine",
-                        Toast.LENGTH_LONG).show();
-            }
 
-            else {
+            else if (mFloorPlan.getFloorLevel()==0) {
                 Toast.makeText(MapActivity.this,
                         "Veuillez Entrer à la Bibliothèque",
                         Toast.LENGTH_LONG).show();
 
             }
+
             setDest();
 
         }
@@ -376,7 +377,6 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
                     X[i] = X2 + 2f * (listz.get(i).getId() - 7);
                 }
                 if (listz.get(i).getId() <= 24 && listz.get(i).getId() >= 16) {
-                    Log.e("ID is", String.valueOf(listz.get(i).getId()));
                     Y[i] = Y3;
                     X[i] = X3 + 2.23f * (listz.get(i).getId() - 16);
                 }
@@ -387,8 +387,11 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
                 }
             }
 
-            PointF destPoint1 = new PointF (X[0]*mFloorPlan.getMetersToPixels(),Y[0]*mFloorPlan.getMetersToPixels());
-            PointF destPoint2 = new PointF (X[1]*mFloorPlan.getMetersToPixels(),Y[1]*mFloorPlan.getMetersToPixels());
+        float pix = 39.902344f;
+
+
+        PointF destPoint1 = new PointF (X[0]*pix,Y[0]*pix);
+            PointF destPoint2 = new PointF (X[1]*pix,Y[1]*pix);
             destPoint1.set(setPos(destPoint1));
             destPoint2.set(setPos(destPoint2));
 
@@ -406,17 +409,14 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
 
             }
 
-            else
-            {
-                if(mFloorPlan.getFloorLevel()==1)
+                if(listz.get(0).getId()>15)
                 {
                     Toast.makeText(MapActivity.this, "Le Livre se trouve à la Mezzanine", Toast.LENGTH_SHORT).show();
                 }
-                if(mFloorPlan.getFloorLevel()==2)
+                if(listz.get(0).getId()<16)
                 {
                     Toast.makeText(MapActivity.this, "Le Livre se trouve à la Salle de Lecture", Toast.LENGTH_SHORT).show();
                 }
-            }
     }
 
     public void setRayon() {
@@ -444,18 +444,19 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
 
     public static PointF setPos(PointF p){
 
+        float pix = 39.902344f;
+
+
         if(listz.get(0).getId()>15)
         {
-            p.x -= P1[1] * mFloorPlan.getMetersToPixels();
-            p.y -= P2[1] * mFloorPlan.getMetersToPixels();
+            p.x -= P1[1] * pix;
+            p.y -= P2[1] * pix;
         }
         else
             {
-                p.x -= P1[0] * mFloorPlan.getMetersToPixels();
-                p.y -= P2[0] * mFloorPlan.getMetersToPixels();
+                p.x -= P1[0] * pix;
+                p.y -= P2[0] * pix;
             }
-
-
         return p;
 
     }

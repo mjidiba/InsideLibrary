@@ -12,6 +12,7 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import java.util.Map;
 
 import static com.example.ahmedaminemajdoubi.library.MapActivity.listz;
+import static com.example.ahmedaminemajdoubi.library.MapActivity.mFloorPlan;
 
 /**
  * Created by amineabboudi on 7/18/17.
@@ -84,7 +85,7 @@ public class BlueDotClass extends SubsamplingScaleImageView {
         if (!isReady()) {
             return;
         }
-        float pix= 39.902344f;
+        float pix = 39.902344f;
 
 
         if (dotCenter != null) {
@@ -95,101 +96,104 @@ public class BlueDotClass extends SubsamplingScaleImageView {
             paint.setColor(getResources().getColor(R.color.title));
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(7);
-            canvas.drawCircle(vPoint.x, vPoint.y, getScale()*accuracy, paint);
+            canvas.drawCircle(vPoint.x, vPoint.y, getScale() * accuracy, paint);
             paint.setColor(getResources().getColor(R.color.ia_blue));
             paint.setAlpha(100);
-            canvas.drawCircle(vPoint.x, vPoint.y, getScale()*accuracy, paint);
+            canvas.drawCircle(vPoint.x, vPoint.y, getScale() * accuracy, paint);
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(getResources().getColor(R.color.white));
-            canvas.drawCircle(vPoint.x, vPoint.y, 1.2f*scaledRadius, paint);
+            canvas.drawCircle(vPoint.x, vPoint.y, 1.2f * scaledRadius, paint);
             paint.setAntiAlias(true);
             paint.setColor(getResources().getColor(R.color.title));
             canvas.drawCircle(vPoint.x, vPoint.y, scaledRadius, paint);
             paint.setStrokeWidth(10);
             paint.setColor(getResources().getColor(R.color.title));
-            double startx = scaledRadius*Math.cos(bearing) + vPoint.x;
-            double starty = scaledRadius*Math.sin(bearing) + vPoint.y;
-            double endx = 2*scaledRadius*Math.cos(bearing) + vPoint.x;
-            double endy = 2*scaledRadius*Math.sin(bearing) + vPoint.y;
+            double startx = scaledRadius * Math.cos(bearing) + vPoint.x;
+            double starty = scaledRadius * Math.sin(bearing) + vPoint.y;
+            double endx = 2 * scaledRadius * Math.cos(bearing) + vPoint.x;
+            double endy = 2 * scaledRadius * Math.sin(bearing) + vPoint.y;
             //canvas.drawLine((float) startx, (float) starty, (float) endx, (float) endy, paint);
-            canvas.drawLine((float) endx, (float) endy,(float) (endx -((endx-startx)*Math.cos(Math.toRadians(55)) - (endy-starty)*Math.sin(Math.toRadians(55)))*1.5) ,(float) (endy -((endy-starty)*Math.cos(Math.toRadians(55)) + (endx-startx)*Math.sin(Math.toRadians(55)))*1.5),paint);
-            canvas.drawLine((float) endx, (float) endy,(float) (endx -((endx-startx)*Math.cos(Math.toRadians(55)) + (endy-starty)*Math.sin(Math.toRadians(55)))*1.5) ,(float) (endy -((endy-starty)*Math.cos(Math.toRadians(55)) - (endx-startx)*Math.sin(Math.toRadians(55)))*1.5),paint);
+            canvas.drawLine((float) endx, (float) endy, (float) (endx - ((endx - startx) * Math.cos(Math.toRadians(55)) - (endy - starty) * Math.sin(Math.toRadians(55))) * 1.5), (float) (endy - ((endy - starty) * Math.cos(Math.toRadians(55)) + (endx - startx) * Math.sin(Math.toRadians(55))) * 1.5), paint);
+            canvas.drawLine((float) endx, (float) endy, (float) (endx - ((endx - startx) * Math.cos(Math.toRadians(55)) + (endy - starty) * Math.sin(Math.toRadians(55))) * 1.5), (float) (endy - ((endy - starty) * Math.cos(Math.toRadians(55)) - (endx - startx) * Math.sin(Math.toRadians(55))) * 1.5), paint);
 
         }
-            if (listz.get(0).getId()<=15) {
-                paint.setAntiAlias(true);
+        if(mFloorPlan!=null)
+        {
 
-                for (int i = 0; i < 6; i++) {
-                    paint.setStyle(Paint.Style.FILL);
-                    paint.setColor(getResources().getColor(R.color.maron));
-                    left_top = new PointF((MapActivity.X1 - 1.11f - 2.23f * i - ((i>=3) ? 1:0 ) *3.6f) * pix, (MapActivity.Y1 - 0.4f) * pix);
-                    right_bottom = new PointF((MapActivity.X1 + 1.11f - 2.23f * i - ((i>=3) ? 1:0 )*3.6f) * pix, (MapActivity.Y1 + 0.4f) * pix);
-                    left_top.set(MapActivity.setPos(left_top));
-                    right_bottom.set(MapActivity.setPos(right_bottom));
-                    left_top.set(sourceToViewCoord(left_top));
-                    right_bottom.set(sourceToViewCoord(right_bottom));
-                    canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
-                    paint.setStyle(Paint.Style.STROKE);
-                    paint.setColor(getResources().getColor(R.color.title));
-                    paint.setStrokeWidth(5);
-                    canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
-                }
+        if (listz.get(0).getId() <= 15) {
+            paint.setAntiAlias(true);
 
-
-                for (int i = 0; i < 9; i++) {
-                    paint.setStyle(Paint.Style.FILL);
-                    paint.setColor(getResources().getColor(R.color.maron));
-                    left_top.set(new PointF((MapActivity.X2 - 1f + 2f * i) * pix, (MapActivity.Y2 - 0.4f) * pix));
-                    right_bottom.set(new PointF((MapActivity.X2 + 1f + 2f * i) * pix, (MapActivity.Y2 + 0.4f) * pix));
-                    left_top.set(MapActivity.setPos(left_top));
-                    right_bottom.set(MapActivity.setPos(right_bottom));
-                    left_top.set(sourceToViewCoord(left_top));
-                    right_bottom.set(sourceToViewCoord(right_bottom));
-                    canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
-                    paint.setStyle(Paint.Style.STROKE);
-                    paint.setColor(getResources().getColor(R.color.title));
-                    paint.setStrokeWidth(5);
-                    canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
-                }
+            for (int i = 0; i < 6; i++) {
+                paint.setStyle(Paint.Style.FILL);
+                paint.setColor(getResources().getColor(R.color.maron));
+                left_top = new PointF((MapActivity.X1 - 1.11f - 2.23f * i - ((i >= 3) ? 1 : 0) * 3.6f) * pix, (MapActivity.Y1 - 0.4f) * pix);
+                right_bottom = new PointF((MapActivity.X1 + 1.11f - 2.23f * i - ((i >= 3) ? 1 : 0) * 3.6f) * pix, (MapActivity.Y1 + 0.4f) * pix);
+                left_top.set(MapActivity.setPos(left_top));
+                right_bottom.set(MapActivity.setPos(right_bottom));
+                left_top.set(sourceToViewCoord(left_top));
+                right_bottom.set(sourceToViewCoord(right_bottom));
+                canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setColor(getResources().getColor(R.color.title));
+                paint.setStrokeWidth(5);
+                canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
             }
-            else if (listz.get(0).getId()>15)
-            {
-                paint.setAntiAlias(true);
 
-                for (int i = 0; i < 9; i++)
-                {
-                    paint.setStyle(Paint.Style.FILL);
-                    paint.setColor(getResources().getColor(R.color.maron));
-                    left_top = new PointF((MapActivity.X3 - 1.11f + 2.23f * i) * pix, (MapActivity.Y3 - 0.4f) * pix);
-                    right_bottom=new PointF((MapActivity.X3 + 1.11f + 2.23f * i) * pix, (MapActivity.Y3 + 0.4f) * pix);
-                    left_top.set(MapActivity.setPos(left_top));
-                    right_bottom.set(MapActivity.setPos(right_bottom));
-                    left_top.set(sourceToViewCoord(left_top));
-                    right_bottom.set(sourceToViewCoord(right_bottom));
-                    canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
-                    paint.setStyle(Paint.Style.STROKE);
-                    paint.setColor(getResources().getColor(R.color.title));
-                    paint.setStrokeWidth(5);
-                    canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
-                    Log.e("Draw", String.valueOf(listz.get(0).getId()));
-                }
-                for (int i = 0; i < 6; i++)
-                {
-                    paint.setStyle(Paint.Style.FILL);
-                    paint.setColor(getResources().getColor(R.color.maron));
-                    left_top = new PointF((MapActivity.X4 - 1.11f - 2.23f * i - ((i>=3) ? 1:0 ) *6.83f) * pix, (MapActivity.Y4 - 0.4f) * pix);
-                    right_bottom = new PointF((MapActivity.X4 + 1.11f - 2.23f * i - ((i>=3) ? 1:0 )*6.83f) * pix, (MapActivity.Y4 + 0.4f) * pix);
-                    left_top.set(MapActivity.setPos(left_top));
-                    right_bottom.set(MapActivity.setPos(right_bottom));
-                    left_top.set(sourceToViewCoord(left_top));
-                    right_bottom.set(sourceToViewCoord(right_bottom));
-                    canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
-                    paint.setStyle(Paint.Style.STROKE);
-                    paint.setColor(getResources().getColor(R.color.title));
-                    paint.setStrokeWidth(5);
-                    canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
-                }
+
+            for (int i = 0; i < 9; i++) {
+                paint.setStyle(Paint.Style.FILL);
+                paint.setColor(getResources().getColor(R.color.maron));
+                left_top.set(new PointF((MapActivity.X2 - 1f + 2f * i) * pix, (MapActivity.Y2 - 0.4f) * pix));
+                right_bottom.set(new PointF((MapActivity.X2 + 1f + 2f * i) * pix, (MapActivity.Y2 + 0.4f) * pix));
+                left_top.set(MapActivity.setPos(left_top));
+                right_bottom.set(MapActivity.setPos(right_bottom));
+                left_top.set(sourceToViewCoord(left_top));
+                right_bottom.set(sourceToViewCoord(right_bottom));
+                canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setColor(getResources().getColor(R.color.title));
+                paint.setStrokeWidth(5);
+                canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
+            }
         }
+        else if (listz.get(0).getId() > 15) {
+            paint.setAntiAlias(true);
+
+            for (int i = 0; i < 9; i++)
+            {
+                paint.setStyle(Paint.Style.FILL);
+                paint.setColor(getResources().getColor(R.color.maron));
+                left_top = new PointF((MapActivity.X3 - 1.11f + 2.23f * i) * pix, (MapActivity.Y3 - 0.4f) * pix);
+                right_bottom = new PointF((MapActivity.X3 + 1.11f + 2.23f * i) * pix, (MapActivity.Y3 + 0.4f) * pix);
+                left_top.set(MapActivity.setPos(left_top));
+                right_bottom.set(MapActivity.setPos(right_bottom));
+                left_top.set(sourceToViewCoord(left_top));
+                right_bottom.set(sourceToViewCoord(right_bottom));
+                canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setColor(getResources().getColor(R.color.title));
+                paint.setStrokeWidth(5);
+                canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
+            }
+
+            for (int i = 0; i < 6; i++)
+            {
+                paint.setStyle(Paint.Style.FILL);
+                paint.setColor(getResources().getColor(R.color.maron));
+                left_top = new PointF((MapActivity.X4 - 1.11f - 2.23f * i - ((i >= 3) ? 1 : 0) * 6.83f) * pix, (MapActivity.Y4 - 0.4f) * pix);
+                right_bottom = new PointF((MapActivity.X4 + 1.11f - 2.23f * i - ((i >= 3) ? 1 : 0) * 6.83f) * pix, (MapActivity.Y4 + 0.4f) * pix);
+                left_top.set(MapActivity.setPos(left_top));
+                right_bottom.set(MapActivity.setPos(right_bottom));
+                left_top.set(sourceToViewCoord(left_top));
+                right_bottom.set(sourceToViewCoord(right_bottom));
+                canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setColor(getResources().getColor(R.color.title));
+                paint.setStrokeWidth(5);
+                canvas.drawRect(left_top.x, left_top.y, right_bottom.x, right_bottom.y, paint);
+            }
+        }
+    }
 
         if (destCenter1 != null) {
             PointF vPoint = destCenter1;
@@ -238,6 +242,4 @@ public class BlueDotClass extends SubsamplingScaleImageView {
 
         }
     }
-
-
 }
