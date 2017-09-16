@@ -111,6 +111,7 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
                 else
                 mImageView.setAccuracy(location.getAccuracy()*mFloorPlan.getMetersToPixels());
 
+
                 mImageView.setDotCenter(point);
                 mImageView.postInvalidate();
             }
